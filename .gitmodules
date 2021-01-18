@@ -4,9 +4,6 @@
 [submodule "vendor/glm"]
 	path = vendor/glm
 	url = https://github.com/g-truc/glm
-[submodule "vendor/imgui"]
-	path = vendor/imgui/imgui
-	url = https://github.com/ocornut/imgui
 [submodule "vendor/shfcl"]
 	path = vendor/shfcl
 	url = https://github.com/arkanis/single-header-file-c-libs
