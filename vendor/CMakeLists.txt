@@ -22,7 +22,7 @@ target_include_directories(imgui PUBLIC
 )
 
 
-add_library(iir_gauss "shfcl/iir_gauss_blur.cpp")
+add_library(iir_gauss "iir_gauss_blur.cpp")
 target_include_directories(iir_gauss PUBLIC "shfcl")
 
 add_library(stb "stb/stb_image.cpp" "stb/stb_image_resize.cpp")
