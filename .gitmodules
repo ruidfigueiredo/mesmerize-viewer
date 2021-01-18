@@ -1,0 +1,18 @@
+[submodule "vendor/glfw"]
+	path = vendor/glfw
+	url = https://github.com/glfw/glfw
+[submodule "vendor/glm"]
+	path = vendor/glm
+	url = https://github.com/g-truc/glm
+[submodule "vendor/imgui"]
+	path = vendor/imgui/imgui
+	url = https://github.com/ocornut/imgui
+[submodule "vendor/shfcl"]
+	path = vendor/shfcl
+	url = https://github.com/arkanis/single-header-file-c-libs
+[submodule "vendor/stb/stb"]
+	path = vendor/stb/stb
+	url = https://github.com/nothings/stb
+[submodule "vendor/googletest"]
+	path = vendor/googletest
+	url = https://github.com/google/googletest.git
