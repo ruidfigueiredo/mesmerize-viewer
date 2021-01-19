@@ -8,6 +8,8 @@ set(ProjectFiles
     "src/VertexBufferLayout.cpp"
     "src/ShaderProgram.cpp"
     "src/VertexBuffer.cpp"
+    "src/ImagePositionCalculator.cpp"
+    "src/ResolutionScaleCalculator.cpp"
     "src/main.cpp"
     )
 add_executable(${PROJECT_NAME} ${ProjectFiles})
