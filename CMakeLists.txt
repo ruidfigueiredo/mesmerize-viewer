@@ -10,6 +10,7 @@ set(ProjectFiles
     "src/VertexBuffer.cpp"
     "src/ImagePositionCalculator.cpp"
     "src/ResolutionScaleCalculator.cpp"
+    "src/PictureLoader.cpp"
     "src/main.cpp"
     )
 add_executable(${PROJECT_NAME} ${ProjectFiles})
