@@ -4,24 +4,21 @@
 #include <stb/stb_image_resize.h>
 #include <iostream>
 
-PictureLoader::PictureLoader(std::shared_ptr<ResolutionScaleCalculator> rcs, int maxDimension) : _resolutionScaleCalculator(rcs), _maxDimension(maxDimension)
+PictureLoader::PictureLoader(std::shared_ptr<ResolutionScaleCalculator> rcs) : _resolutionScaleCalculator(rcs)
 {
     unsigned int textureIds[2];
     glGenTextures(2, textureIds);
     _mainTextureId = textureIds[0];
     _blurryBackgroundTextureId = textureIds[1];
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_maxDimension);
 }
 
-PictureLoadResult PictureLoader::Load(std::string path)
+PictureLoadResult PictureLoader::Load(std::string path, int textureSlot)
 {
     stbi_set_flip_vertically_on_load(true);
     int width, height, bytesPerPixel;
-    unsigned char *loadedImage = stbi_load(path.c_str(), &width, &height, &bytesPerPixel, 0);
+    unsigned char *loadedImage = stbi_load(path.c_str(), &width, &height, &bytesPerPixel, 3);
     if (loadedImage == nullptr)
     {
         return PictureLoadResult{
@@ -29,8 +26,12 @@ PictureLoadResult PictureLoader::Load(std::string path)
             std::array<int, 8>{}};
     }
 
+    glActiveTexture(GL_TEXTURE0 + textureSlot);
     glBindTexture(GL_TEXTURE_2D, _mainTextureId);
-    glActiveTexture(GL_TEXTURE1);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     if (_resolutionScaleCalculator->IsScallingRequired(width, height, _maxDimension))
     {

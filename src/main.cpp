@@ -20,6 +20,9 @@
 #include "ShaderProgram.h"
 #include "Renderer.h"
 
+#include "PictureLoader.h"
+#include "ResolutionScaleCalculator.h"
+
 #define ASSERT(x) \
     if (!(x))     \
     raise(SIGTRAP)
@@ -195,9 +198,10 @@ int main(void)
     glfwSwapInterval(1);
 
     Renderer renderer;
-    loadImageAndCreateVertexBuffer("./example.jpg");
-    loadImageIntoSlot0("./example.jpg");
-
+    //loadImageAndCreateVertexBuffer("./example.jpg");
+    //loadImageIntoSlot0("./example.jpg");
+    PictureLoader pl{std::make_shared<ResolutionScaleCalculator>()};
+    pl.Load("/home/rdfi/Pictures/IMG_1076.JPG", 0);
     /* Loop until the user closes the window */
     float factor = 1.0f;
     float delta = 0.0001f;
@@ -232,6 +236,12 @@ int main(void)
                 counter++;
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
+
+            if (counter > 5)
+            {
+                pl.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 0);
+                counter = 0;
+            }
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();

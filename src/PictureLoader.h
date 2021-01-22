@@ -17,6 +17,6 @@ class PictureLoader
     int _maxDimension;
 
 public:
-    PictureLoader(std::shared_ptr<ResolutionScaleCalculator> rsc, int maxDimension);
-    PictureLoadResult Load(std::string pathToFile);
+    PictureLoader(std::shared_ptr<ResolutionScaleCalculator> rsc);
+    PictureLoadResult Load(std::string pathToFile, int textureSlot);
 };
