@@ -200,14 +200,18 @@ int main(void)
     Renderer renderer;
     //loadImageAndCreateVertexBuffer("./example.jpg");
     //loadImageIntoSlot0("./example.jpg");
-    PictureLoader pl{std::make_shared<ResolutionScaleCalculator>()};
-    pl.Load("/home/rdfi/Pictures/IMG_1076.JPG", 0);
+    PictureLoader pl1{std::make_shared<ResolutionScaleCalculator>()};
+    pl1.Load("/home/rdfi/Pictures/IMG_1076.JPG", 0);
+    PictureLoader pl2{std::make_shared<ResolutionScaleCalculator>()};
+    pl2.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 1);
     /* Loop until the user closes the window */
     float factor = 1.0f;
     float delta = 0.0001f;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     glm::vec3 translateVectorA(0.0f, 0.0f, 0.0f);
     glm::vec3 translateVectorB(0.0f, 0.0f, 0.0f);
+    int selectedTextureSlot = 0;
+    float blendValue = 0.0f;
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
@@ -220,7 +224,7 @@ int main(void)
         ImGui::NewFrame();
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
-            static float f = 0.0f;
+
             static int counter = 0;
 
             ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
@@ -229,7 +233,7 @@ int main(void)
             ImGui::SliderFloat3("TranslateA", &translateVectorA.x, 0.0f, 1080.0f);
             ImGui::SliderFloat3("TranslateB", &translateVectorB.x, 0.0f, 1080.0f);
             ImGui::SliderFloat("Scale", &factor, 0.0f, 5.0f);
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);             // Edit 1 float using a slider from 0.0f to 1.0f
+            ImGui::SliderFloat("Blend", &blendValue, 0.0f, 1.0f);    // Edit 1 float using a slider from 0.0f to 1.0f
             ImGui::ColorEdit3("clear color", (float *)&clear_color); // Edit 3 floats representing a color
 
             if (ImGui::Button("Button")) // Buttons return true when clicked (most widgets return true when edited/activated)
@@ -239,7 +243,8 @@ int main(void)
 
             if (counter > 5)
             {
-                pl.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 0);
+                selectedTextureSlot = (selectedTextureSlot == 0 ? 1 : 0);
+                //pl1.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 0);
                 counter = 0;
             }
 
@@ -247,7 +252,9 @@ int main(void)
             ImGui::End();
         }
 
-        program.SetUniformi("textureSlot", 0);
+        program.SetUniformi("oddTextureSlot", 0);
+        program.SetUniformi("evenTextureSlot", 1);
+        program.SetUniformf("blendValue", blendValue);
         //glm::mat4 projection = glm::ortho(0.0f * factor + (factor - 1.0f) * delta * 30.0f, 320.0f * factor + (factor - 1.0f) * delta * 30.0f, 0 * factor, 240 * factor, -1.0f, 1.0f);
         glm::mat4 projection = glm::ortho(0.0f, 320.0f, 0.0f, 240.0f, -1.0f, 1.0f);
 

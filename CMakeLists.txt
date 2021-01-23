@@ -22,13 +22,10 @@ set(IncludeDirectories
 target_include_directories(${PROJECT_NAME} PRIVATE ${IncludeDirectories})
 target_link_libraries(${PROJECT_NAME} glfw glew glm imgui iir_gauss stb)
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_NAME run)
-#https://stackoverflow.com/questions/697560/how-to-copy-directory-from-source-tree-to-binary-tree
-#add_custom_command(TARGET MesmerizeClient PRE_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy_directory
-#    ${CMAKE_SOURCE_DIR}/src/shaders/ $<TARGET_FILE_DIR:MesmerizeClient>/shaders)
-#https://stackoverflow.com/questions/34799916/copy-file-from-source-directory-to-binary-directory-using-cmake
+
 file(COPY example.jpg DESTINATION ${CMAKE_BINARY_DIR})
-add_custom_command(TARGET MesmerizeClient
+
+add_custom_command(TARGET MesmerizeClient PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/src/shaders ${CMAKE_BINARY_DIR}/shaders)
 

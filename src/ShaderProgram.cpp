@@ -65,6 +65,12 @@ void ShaderProgram::SetUniformi(const std::string &name, const int &value)
     glUniform1i(location, value);
 }
 
+void ShaderProgram::SetUniformf(const std::string &name, const float &value)
+{
+    int location = GetLocation(name);
+    glUniform1f(location, value);
+}
+
 void ShaderProgram::SetUniformMat4f(const std::string &name, const glm::mat4 &proj)
 {
     int location = GetLocation(name);
