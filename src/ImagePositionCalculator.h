@@ -9,5 +9,5 @@ class ImagePositionCalculator
 
 public:
     ImagePositionCalculator(const std::shared_ptr<ResolutionScaleCalculator> resolutionScaleCalculator) : _resolutionScaleCalculator(resolutionScaleCalculator) {}
-    std::array<float, 8> GetCenteredRectangleVertexCoordinates(int deviceWidth, int deviceHeight, int imageWidth, int imageHeight);
+    std::array<float, 16> GetCenteredRectangleVertexCoordinates(int deviceWidth, int deviceHeight, int imageWidth, int imageHeight);
 };

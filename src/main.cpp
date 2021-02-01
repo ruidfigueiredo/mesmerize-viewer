@@ -179,9 +179,9 @@ int main(void)
 
     float triangleVertices[] = {
         0.0f, 0.0f, 0.0f, 0.0f,
-        320.0f, 0.0f, 1.0f, 0.0f,
-        320.0f, 240.0f, 1.0f, 1.0f,
-        0.0f, 240.0f, 0.0f, 1.0f};
+        640.0f, 0.0f, 1.0f, 0.0f,
+        640.0f, 480.0f, 1.0f, 1.0f,
+        0.0f, 480.0f, 0.0f, 1.0f};
     VertexBuffer vb(triangleVertices, sizeof(triangleVertices));
     VertexBufferLayout twoFloatBufferLayout;
     twoFloatBufferLayout.Push<float>(2);
@@ -204,6 +204,7 @@ int main(void)
     pl1.Load("/home/rdfi/Pictures/IMG_1076.JPG", 0);
     PictureLoader pl2{std::make_shared<ResolutionScaleCalculator>()};
     pl2.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 1);
+
     /* Loop until the user closes the window */
     float factor = 1.0f;
     float delta = 0.0001f;
@@ -244,7 +245,7 @@ int main(void)
             if (counter > 5)
             {
                 selectedTextureSlot = (selectedTextureSlot == 0 ? 1 : 0);
-                //pl1.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 0);
+                pl1.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 0);
                 counter = 0;
             }
 
@@ -256,7 +257,7 @@ int main(void)
         program.SetUniformi("evenTextureSlot", 1);
         program.SetUniformf("blendValue", blendValue);
         //glm::mat4 projection = glm::ortho(0.0f * factor + (factor - 1.0f) * delta * 30.0f, 320.0f * factor + (factor - 1.0f) * delta * 30.0f, 0 * factor, 240 * factor, -1.0f, 1.0f);
-        glm::mat4 projection = glm::ortho(0.0f, 320.0f, 0.0f, 240.0f, -1.0f, 1.0f);
+        glm::mat4 projection = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f, -1.0f, 1.0f);
 
         glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
         glm::mat4 model{1.0f};
