@@ -201,9 +201,9 @@ int main(void)
     //loadImageAndCreateVertexBuffer("./example.jpg");
     //loadImageIntoSlot0("./example.jpg");
     PictureLoader pl1{std::make_shared<ResolutionScaleCalculator>()};
-    pl1.Load("/home/rdfi/Pictures/IMG_1076.JPG", 0);
+    pl1.Load("/home/rdfi/Pictures/Croatia/medusa.jpg", 0);
     PictureLoader pl2{std::make_shared<ResolutionScaleCalculator>()};
-    pl2.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 1);
+    pl2.Load("/home/rdfi/Pictures/Croatia/nudibranche.jpg", 1);
 
     /* Loop until the user closes the window */
     float factor = 1.0f;

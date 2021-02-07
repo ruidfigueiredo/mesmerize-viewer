@@ -32,6 +32,8 @@ PictureLoadResult PictureLoader::Load(std::string path, int textureSlot)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    
 
     if (_resolutionScaleCalculator->IsScallingRequired(width, height, _maxDimension))
     {
