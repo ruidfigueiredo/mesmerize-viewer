@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.19.2)
 project(MesmerizeClient)
+set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(vendor)
 set(ProjectFiles 
     "src/IndexBuffer.cpp"

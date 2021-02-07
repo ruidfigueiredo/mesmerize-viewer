@@ -22,6 +22,9 @@
 
 #include "PictureLoader.h"
 #include "ResolutionScaleCalculator.h"
+#include <vector>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 #define ASSERT(x) \
     if (!(x))     \
@@ -68,63 +71,18 @@ static bool GlLogCall(const char *functionCall, const char *file, int lineNo)
     return false;
 }
 
-static void loadImageIntoSlot0(const std::string &path)
-{
-    int width, height, bytesPerPixel;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char *imageData = stbi_load(path.c_str(), &width, &height, &bytesPerPixel, 0);
-    ASSERT(imageData != nullptr);
-
-    //iir_gauss_blur(width, height, bytesPerPixel, imageData, 20.0f);
-    unsigned char *output_pixels = (unsigned char *)malloc(1980 * 1080 * bytesPerPixel);
-    stbir_resize_uint8(imageData, width, height, 0, output_pixels, 1980, 1080, 0, bytesPerPixel);
-
-    unsigned int textureId;
-    glGenTextures(1, &textureId);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureId);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 1980, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, output_pixels);
-    delete output_pixels;
-
-    stbi_image_free((void *)imageData);
-}
-
-static void loadImageAndCreateVertexBuffer(const std::string &path)
-{
-    int width, height, bytesPerPixel;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char *imageData = stbi_load(path.c_str(), &width, &height, &bytesPerPixel, 0);
-    ASSERT(imageData != nullptr);
-
-    int maxResolution;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxResolution);
-    //maxResolution = 1980;
-    unsigned char *output_pixels = nullptr;
-    if (width >= maxResolution || height >= maxResolution)
-    {
-        std::cout << "Image is too large for video card memory (max is " << maxResolution << "x" << maxResolution << std::endl;
-        int max = std::max(width, height);
-        std::cout << "Image is " << width << "x" << height << ", using " << max << " to determine scale factor" << std::endl;
-        float scaleFactor = 1.0f * maxResolution / max;
-        std::cout << "Scale factor is: " << scaleFactor << std::endl;
-        int finalWidth = (int)std::floor(width * scaleFactor);
-        int finalHeight = (int)std::floor(height * scaleFactor);
-        std::cout << "Image is now " << finalWidth << "x" << finalHeight << std::endl;
-        output_pixels = (unsigned char *)malloc(width * height * bytesPerPixel);
-        stbir_resize_uint8(imageData, width, height, 0, output_pixels, finalWidth, finalHeight, 0, bytesPerPixel);
+std::vector<std::string> getPicturePaths() {
+    std::vector<std::string> result;
+    std::string path = "/home/rdfi/Pictures/Croatia";
+    for(const auto & entry: std::filesystem::directory_iterator(path)){
+        result.push_back(entry.path());
     }
-    stbi_image_free(imageData);
-    delete output_pixels;
+    return result;
 }
 
 int main(void)
 {
+    auto picturePaths = getPicturePaths();
     GLFWwindow *window;
 
     /* Initialize the library */
@@ -175,35 +133,14 @@ int main(void)
     program.AddFragmentShader("shaders/fragment.shader");
     program.Bind();
 
-    VertexArray va;
-
-    float triangleVertices[] = {
-        0.0f, 0.0f, 0.0f, 0.0f,
-        640.0f, 0.0f, 1.0f, 0.0f,
-        640.0f, 480.0f, 1.0f, 1.0f,
-        0.0f, 480.0f, 0.0f, 1.0f};
-    VertexBuffer vb(triangleVertices, sizeof(triangleVertices));
-    VertexBufferLayout twoFloatBufferLayout;
-    twoFloatBufferLayout.Push<float>(2);
-    twoFloatBufferLayout.Push<float>(2);
-    va.AddBuffer(vb, twoFloatBufferLayout);
-
-    uint indexes[] = {
-        0, 1, 2,
-        2, 3, 0};
-    IndexBuffer ib(indexes, 6);
-    va.AddBuffer(ib);
-    va.Bind();
-
     glfwSwapInterval(1);
 
     Renderer renderer;
     //loadImageAndCreateVertexBuffer("./example.jpg");
     //loadImageIntoSlot0("./example.jpg");
-    PictureLoader pl1{std::make_shared<ResolutionScaleCalculator>()};
-    pl1.Load("/home/rdfi/Pictures/Croatia/medusa.jpg", 0);
-    PictureLoader pl2{std::make_shared<ResolutionScaleCalculator>()};
-    pl2.Load("/home/rdfi/Pictures/Croatia/nudibranche.jpg", 1);
+    PictureLoader pl1{std::make_shared<ResolutionScaleCalculator>(), 
+        std::make_shared<ImagePositionCalculator>(std::make_shared<ResolutionScaleCalculator>())};
+    pl1.Load(picturePaths[0]);
 
     /* Loop until the user closes the window */
     float factor = 1.0f;
@@ -227,6 +164,7 @@ int main(void)
         {
 
             static int counter = 0;
+            static int previous = 0;
 
             ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
 
@@ -242,29 +180,27 @@ int main(void)
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
 
-            if (counter > 5)
-            {
-                selectedTextureSlot = (selectedTextureSlot == 0 ? 1 : 0);
-                pl1.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 0);
-                counter = 0;
-            }
-
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();
+            if (previous != counter) {
+                pl1.Load(picturePaths[counter % picturePaths.size()]);
+                previous = counter;
+            }
+
         }
 
         program.SetUniformi("oddTextureSlot", 0);
         program.SetUniformi("evenTextureSlot", 1);
         program.SetUniformf("blendValue", blendValue);
         //glm::mat4 projection = glm::ortho(0.0f * factor + (factor - 1.0f) * delta * 30.0f, 320.0f * factor + (factor - 1.0f) * delta * 30.0f, 0 * factor, 240 * factor, -1.0f, 1.0f);
-        glm::mat4 projection = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f, -1.0f, 1.0f);
+        glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -1.0f, 1.0f);
 
         glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
         glm::mat4 model{1.0f};
         program.SetUniformMat4f("mvp", projection * view * model);
 
         //GL_CALL(glDrawElements(GL_TRIANGLES, ib.GetNumberOfElements(), GL_UNSIGNED_INT, nullptr));
-        GL_CALL(renderer.Draw(va, program));
+        GL_CALL(pl1.Render());
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

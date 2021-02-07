@@ -4,17 +4,23 @@
 #include <stb/stb_image_resize.h>
 #include <iostream>
 
-PictureLoader::PictureLoader(std::shared_ptr<ResolutionScaleCalculator> rcs) : _resolutionScaleCalculator(rcs)
-{
+PictureLoader::PictureLoader(std::shared_ptr<ResolutionScaleCalculator> rcs, std::shared_ptr<ImagePositionCalculator> ipc) 
+    : _resolutionScaleCalculator(rcs), _imagePositionCalculator(ipc)
+{    
+    glGenBuffers(1, &_arrayBufferId);
+    glGenBuffers(1, &_indexBufferId);
+    glGenVertexArrays(1, &_vertexArrayId);
     unsigned int textureIds[2];
     glGenTextures(2, textureIds);
     _mainTextureId = textureIds[0];
-    _blurryBackgroundTextureId = textureIds[1];
+    _blurryBackgroundTextureId = textureIds[1];    
 
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_maxDimension);
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_maxDimension);    
+    _textureSlot = 0;
 }
 
-PictureLoadResult PictureLoader::Load(std::string path, int textureSlot)
+
+PictureLoadResult PictureLoader::Load(std::string path)
 {
     stbi_set_flip_vertically_on_load(true);
     int width, height, bytesPerPixel;
@@ -26,7 +32,7 @@ PictureLoadResult PictureLoader::Load(std::string path, int textureSlot)
             std::array<int, 8>{}};
     }
 
-    glActiveTexture(GL_TEXTURE0 + textureSlot);
+    glActiveTexture(GL_TEXTURE0 + _textureSlot);
     glBindTexture(GL_TEXTURE_2D, _mainTextureId);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -50,7 +56,29 @@ PictureLoadResult PictureLoader::Load(std::string path, int textureSlot)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, loadedImage);
     }
 
+    auto coordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(1920, 1080, width, height);
+    glBindVertexArray(_vertexArrayId);
+    glBindBuffer(GL_ARRAY_BUFFER, _arrayBufferId);    
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float)*coordinates.size(), &coordinates[0], GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), 0);
+    glEnableVertexAttribArray(1);
+    unsigned long offset = 2 * sizeof(float);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), (const void *)offset) ;
+    uint indexes[] = {
+        0, 1, 2,
+        2, 3, 0};
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferId);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6*sizeof(unsigned int), indexes, GL_STATIC_DRAW);
+    
     //missing glActivateTexture(GL_TEXTURE0) with blurry version
     //glBindTexture(GL_TEXTURE_2D, _blurryBackgroundTextureId)
-    stbi_image_free(loadedImage);
+    stbi_image_free(loadedImage);    
+}
+
+void PictureLoader::Render() {
+    glActiveTexture(GL_TEXTURE0 + _textureSlot);
+    glBindTexture(GL_TEXTURE_2D, _mainTextureId);        
+    glBindVertexArray(_vertexArrayId);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
