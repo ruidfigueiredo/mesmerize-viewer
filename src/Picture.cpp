@@ -1,10 +1,11 @@
-#include "PictureLoader.h"
+#include "Picture.h"
 #include "GL/glew.h"
 #include <stb/stb_image.h>
 #include <stb/stb_image_resize.h>
 #include <iostream>
+#include "ImagePositionCalculator.h"
 
-PictureLoader::PictureLoader(std::shared_ptr<ResolutionScaleCalculator> rcs) : _resolutionScaleCalculator(rcs)
+Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs) : _resolutionScaleCalculator(rcs)
 {
     unsigned int textureIds[2];
     glGenTextures(2, textureIds);
@@ -14,7 +15,7 @@ PictureLoader::PictureLoader(std::shared_ptr<ResolutionScaleCalculator> rcs) : _
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_maxDimension);
 }
 
-PictureLoadResult PictureLoader::Load(std::string path, int textureSlot)
+PictureLoadResult Picture::Load(std::string path, int textureSlot)
 {
     stbi_set_flip_vertically_on_load(true);
     int width, height, bytesPerPixel;
@@ -23,7 +24,7 @@ PictureLoadResult PictureLoader::Load(std::string path, int textureSlot)
     {
         return PictureLoadResult{
             false,
-            std::array<int, 8>{}};
+            std::array<float, 16>{}};
     }
 
     glActiveTexture(GL_TEXTURE0 + textureSlot);
@@ -35,6 +36,7 @@ PictureLoadResult PictureLoader::Load(std::string path, int textureSlot)
 
     if (_resolutionScaleCalculator->IsScallingRequired(width, height, _maxDimension))
     {
+        std::cout << "Scalling is required\n";
         auto scaledDimensions = _resolutionScaleCalculator->ScaleToMaxDimension(width, height, _maxDimension);
         int newWidth = scaledDimensions.first;
         int newHeight = scaledDimensions.second;
@@ -45,10 +47,21 @@ PictureLoadResult PictureLoader::Load(std::string path, int textureSlot)
     }
     else
     {
+        std::cout << "Scalling isn't required\n";
+        std::cout << "*************************************\n";
+        std::cout << "Image dimensions: (" << width << ", " << height << ")\n";
+        std::cout << "*************************************\n";
+
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, loadedImage);
+        std::cout << "**********LOADED***********************\n";
     }
 
     //missing glActivateTexture(GL_TEXTURE0) with blurry version
     //glBindTexture(GL_TEXTURE_2D, _blurryBackgroundTextureId)
+    ImagePositionCalculator ipc{_resolutionScaleCalculator};
     stbi_image_free(loadedImage);
+    return PictureLoadResult{
+        true,
+        ipc.GetCenteredRectangleVertexCoordinates(1920, 1080, width, height)};
 }

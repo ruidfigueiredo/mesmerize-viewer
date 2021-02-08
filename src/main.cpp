@@ -20,7 +20,7 @@
 #include "ShaderProgram.h"
 #include "Renderer.h"
 
-#include "PictureLoader.h"
+#include "Picture.h"
 #include "ResolutionScaleCalculator.h"
 
 #define ASSERT(x) \
@@ -131,10 +131,6 @@ int main(void)
     if (!glfwInit())
         return -1;
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(1920, 1080, "Hello World", NULL, NULL);
     if (!window)
@@ -148,9 +144,10 @@ int main(void)
 
     ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 130");
+    ImGui_ImplOpenGL3_Init("#version 300 es");
 
     GLenum err = glewInit();
+
     if (GLEW_OK != err)
     {
         /* Problem: glewInit failed, something is seriously wrong. */
@@ -177,12 +174,29 @@ int main(void)
 
     VertexArray va;
 
-    float triangleVertices[] = {
-        0.0f, 0.0f, 0.0f, 0.0f,
-        640.0f, 0.0f, 1.0f, 0.0f,
-        640.0f, 480.0f, 1.0f, 1.0f,
-        0.0f, 480.0f, 0.0f, 1.0f};
-    VertexBuffer vb(triangleVertices, sizeof(triangleVertices));
+    //loadImageAndCreateVertexBuffer("./example.jpg");
+    //loadImageIntoSlot0("./example.jpg");
+    Picture pl1{std::make_shared<ResolutionScaleCalculator>()};
+    auto pl1LoadResult = pl1.Load("/home/rdfi/Pictures/bird.JPG", 0);
+    Picture pl2{std::make_shared<ResolutionScaleCalculator>()};
+    pl2.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 1);
+
+    // float triangleVertices[] = {
+    //     0.0f, 0.0f, 0.0f, 0.0f,
+    //     640.0f, 0.0f, 1.0f, 0.0f,
+    //     640.0f, 480.0f, 1.0f, 1.0f,
+    //     0.0f, 480.0f, 0.0f, 1.0f};
+    //float *triangleVertices = pl1LoadResult.VertexCoordinates[0];
+    std::cout << "----------------------\n";
+    for (auto i = 0; i < pl1LoadResult.VertexCoordinates.size(); i++)
+    {
+        if (i > 0 && i % 4 == 0)
+            std::cout << std::endl;
+        std::cout << std::to_string(pl1LoadResult.VertexCoordinates[i]) + " ";
+    }
+    std::cout << "\n----------------------\n";
+    float *triangleVertices = &pl1LoadResult.VertexCoordinates[0];
+    VertexBuffer vb(triangleVertices, sizeof(float) * pl1LoadResult.VertexCoordinates.size());
     VertexBufferLayout twoFloatBufferLayout;
     twoFloatBufferLayout.Push<float>(2);
     twoFloatBufferLayout.Push<float>(2);
@@ -198,13 +212,6 @@ int main(void)
     glfwSwapInterval(1);
 
     Renderer renderer;
-    //loadImageAndCreateVertexBuffer("./example.jpg");
-    //loadImageIntoSlot0("./example.jpg");
-    PictureLoader pl1{std::make_shared<ResolutionScaleCalculator>()};
-    pl1.Load("/home/rdfi/Pictures/IMG_1076.JPG", 0);
-    PictureLoader pl2{std::make_shared<ResolutionScaleCalculator>()};
-    pl2.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 1);
-
     /* Loop until the user closes the window */
     float factor = 1.0f;
     float delta = 0.0001f;
@@ -257,7 +264,7 @@ int main(void)
         program.SetUniformi("evenTextureSlot", 1);
         program.SetUniformf("blendValue", blendValue);
         //glm::mat4 projection = glm::ortho(0.0f * factor + (factor - 1.0f) * delta * 30.0f, 320.0f * factor + (factor - 1.0f) * delta * 30.0f, 0 * factor, 240 * factor, -1.0f, 1.0f);
-        glm::mat4 projection = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f, -1.0f, 1.0f);
+        glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -1.0f, 1.0f);
 
         glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
         glm::mat4 model{1.0f};

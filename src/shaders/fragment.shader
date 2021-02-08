@@ -1,9 +1,9 @@
-#version 330 core
+#version 300 es
 
-in vec2 textureCoordinate;
+in mediump vec2 textureCoordinate;
 uniform sampler2D oddTextureSlot;
 uniform sampler2D evenTextureSlot;
-uniform float blendValue;
+uniform mediump float blendValue;
 
 out vec4 color;
 

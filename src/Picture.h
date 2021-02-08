@@ -6,10 +6,10 @@
 struct PictureLoadResult
 {
     bool WasLoadingSuccessful;
-    std::array<int, 8> VertexCoordinates;
+    std::array<float, 16> VertexCoordinates;
 };
 
-class PictureLoader
+class Picture
 {
     unsigned int _mainTextureId;
     unsigned int _blurryBackgroundTextureId;
@@ -17,6 +17,6 @@ class PictureLoader
     int _maxDimension;
 
 public:
-    PictureLoader(std::shared_ptr<ResolutionScaleCalculator> rsc);
+    Picture(std::shared_ptr<ResolutionScaleCalculator> rsc);
     PictureLoadResult Load(std::string pathToFile, int textureSlot);
 };
