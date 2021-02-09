@@ -4,7 +4,6 @@
 #include <math.h>
 
 #include <string>
-#include <signal.h>
 #include <stb/stb_image.h>
 #include <stb/stb_image_resize.h>
 #include <iir_gauss_blur.h>
@@ -22,106 +21,7 @@
 
 #include "Picture.h"
 #include "ResolutionScaleCalculator.h"
-
-#define ASSERT(x) \
-    if (!(x))     \
-    raise(SIGTRAP)
-
-#define GL_CALL(x)   \
-    ClearGlErrors(); \
-    x;               \
-    ASSERT(GlLogCall(#x, __FILE__, __LINE__))
-
-static void
-ClearGlErrors()
-{
-    while (glGetError())
-        ;
-}
-
-static void GLAPIENTRY
-MessageCallback(GLenum source,
-                GLenum type,
-                GLuint id,
-                GLenum severity,
-                GLsizei length,
-                const GLchar *message,
-                const void *userParam)
-{
-    fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-            (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-            type, severity, message);
-}
-
-static bool GlLogCall(const char *functionCall, const char *file, int lineNo)
-{
-    GLenum error = glGetError();
-    if (error == GL_NO_ERROR)
-        return true;
-
-    std::cout << "[OpenGL Error] ("
-              << std::hex
-              << error
-              << std::dec << ") "
-              << functionCall << " "
-              << file << ": " << lineNo << std::endl;
-    return false;
-}
-
-static void loadImageIntoSlot0(const std::string &path)
-{
-    int width, height, bytesPerPixel;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char *imageData = stbi_load(path.c_str(), &width, &height, &bytesPerPixel, 0);
-    ASSERT(imageData != nullptr);
-
-    //iir_gauss_blur(width, height, bytesPerPixel, imageData, 20.0f);
-    unsigned char *output_pixels = (unsigned char *)malloc(1980 * 1080 * bytesPerPixel);
-    stbir_resize_uint8(imageData, width, height, 0, output_pixels, 1980, 1080, 0, bytesPerPixel);
-
-    unsigned int textureId;
-    glGenTextures(1, &textureId);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureId);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 1980, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, output_pixels);
-    delete output_pixels;
-
-    stbi_image_free((void *)imageData);
-}
-
-static void loadImageAndCreateVertexBuffer(const std::string &path)
-{
-    int width, height, bytesPerPixel;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char *imageData = stbi_load(path.c_str(), &width, &height, &bytesPerPixel, 0);
-    ASSERT(imageData != nullptr);
-
-    int maxResolution;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxResolution);
-    //maxResolution = 1980;
-    unsigned char *output_pixels = nullptr;
-    if (width >= maxResolution || height >= maxResolution)
-    {
-        std::cout << "Image is too large for video card memory (max is " << maxResolution << "x" << maxResolution << std::endl;
-        int max = std::max(width, height);
-        std::cout << "Image is " << width << "x" << height << ", using " << max << " to determine scale factor" << std::endl;
-        float scaleFactor = 1.0f * maxResolution / max;
-        std::cout << "Scale factor is: " << scaleFactor << std::endl;
-        int finalWidth = (int)std::floor(width * scaleFactor);
-        int finalHeight = (int)std::floor(height * scaleFactor);
-        std::cout << "Image is now " << finalWidth << "x" << finalHeight << std::endl;
-        output_pixels = (unsigned char *)malloc(width * height * bytesPerPixel);
-        stbir_resize_uint8(imageData, width, height, 0, output_pixels, finalWidth, finalHeight, 0, bytesPerPixel);
-    }
-    stbi_image_free(imageData);
-    delete output_pixels;
-}
+#include "CheckGlErrors.h"
 
 int main(void)
 {
@@ -142,9 +42,9 @@ int main(void)
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
-    ImGui::CreateContext();
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 300 es");
+    GL_CALL(ImGui::CreateContext());
+    GL_CALL(ImGui_ImplGlfw_InitForOpenGL(window, true));
+    GL_CALL(ImGui_ImplOpenGL3_Init("#version 300 es"));
 
     GLenum err = glewInit();
 
@@ -156,16 +56,16 @@ int main(void)
     }
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
     int maxTextureSize;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+    GL_CALL(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize));
     std::cout << "MAX Texture size is " << maxTextureSize << std::endl;
 
     // During init, enable debug output
-    glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(MessageCallback, 0);
+    GL_CALL(glEnable(GL_DEBUG_OUTPUT));
+    GL_CALL(glDebugMessageCallback(MessageCallback, 0));
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBlendEquation(GL_FUNC_ADD);
+    GL_CALL(glEnable(GL_BLEND));
+    GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    GL_CALL(glBlendEquation(GL_FUNC_ADD));
 
     ShaderProgram program;
     program.AddVertexShader("shaders/vertex.shader");
@@ -181,12 +81,6 @@ int main(void)
     Picture pl2{std::make_shared<ResolutionScaleCalculator>()};
     pl2.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 1);
 
-    // float triangleVertices[] = {
-    //     0.0f, 0.0f, 0.0f, 0.0f,
-    //     640.0f, 0.0f, 1.0f, 0.0f,
-    //     640.0f, 480.0f, 1.0f, 1.0f,
-    //     0.0f, 480.0f, 0.0f, 1.0f};
-    //float *triangleVertices = pl1LoadResult.VertexCoordinates[0];
     std::cout << "----------------------\n";
     for (auto i = 0; i < pl1LoadResult.VertexCoordinates.size(); i++)
     {
@@ -227,22 +121,22 @@ int main(void)
         //glClear(GL_COLOR_BUFFER_BIT);
 
         // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        GL_CALL(ImGui_ImplOpenGL3_NewFrame());
+        GL_CALL(ImGui_ImplGlfw_NewFrame());
+        GL_CALL(ImGui::NewFrame());
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
 
             static int counter = 0;
 
-            ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
+            GL_CALL(ImGui::Begin("Hello, world!")); // Create a window called "Hello, world!" and append into it.
 
-            ImGui::Text("This is some useful text."); // Display some text (you can use a format strings too)
-            ImGui::SliderFloat3("TranslateA", &translateVectorA.x, 0.0f, 1080.0f);
-            ImGui::SliderFloat3("TranslateB", &translateVectorB.x, 0.0f, 1080.0f);
-            ImGui::SliderFloat("Scale", &factor, 0.0f, 5.0f);
-            ImGui::SliderFloat("Blend", &blendValue, 0.0f, 1.0f);    // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float *)&clear_color); // Edit 3 floats representing a color
+            GL_CALL(ImGui::Text("This is some useful text.")); // Display some text (you can use a format strings too)
+            GL_CALL(ImGui::SliderFloat3("TranslateA", &translateVectorA.x, 0.0f, 1080.0f));
+            GL_CALL(ImGui::SliderFloat3("TranslateB", &translateVectorB.x, 0.0f, 1080.0f));
+            GL_CALL(ImGui::SliderFloat("Scale", &factor, 0.0f, 5.0f));
+            GL_CALL(ImGui::SliderFloat("Blend", &blendValue, 0.0f, 1.0f));    // Edit 1 float using a slider from 0.0f to 1.0f
+            GL_CALL(ImGui::ColorEdit3("clear color", (float *)&clear_color)); // Edit 3 floats representing a color
 
             if (ImGui::Button("Button")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 counter++;
@@ -273,8 +167,8 @@ int main(void)
         //GL_CALL(glDrawElements(GL_TRIANGLES, ib.GetNumberOfElements(), GL_UNSIGNED_INT, nullptr));
         GL_CALL(renderer.Draw(va, program));
 
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        GL_CALL(ImGui::Render());
+        GL_CALL(ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()));
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
@@ -289,9 +183,9 @@ int main(void)
     }
 
     //glDeleteProgram(programId);
-    ImGui_ImplGlfw_Shutdown();
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui::DestroyContext();
+    GL_CALL(ImGui_ImplGlfw_Shutdown());
+    GL_CALL(ImGui_ImplOpenGL3_Shutdown());
+    GL_CALL(ImGui::DestroyContext());
     glfwTerminate();
     return 0;
 }

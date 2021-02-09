@@ -2,16 +2,17 @@
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 #include "IndexBuffer.h"
+#include "CheckGlErrors.h"
 
 VertexArray::VertexArray() : _rendererId(0), _hasIndexBuffer(false), _numberOfElementsInIndexBuffer(-1)
 {
-    glGenVertexArrays(1, &_rendererId);
+    GL_CALL(glGenVertexArrays(1, &_rendererId));
     this->Bind();
 }
 
 VertexArray::~VertexArray()
 {
-    glDeleteVertexArrays(1, &_rendererId);
+    GL_CALL(glDeleteVertexArrays(1, &_rendererId));
 }
 
 void VertexArray::AddBuffer(const VertexBuffer &vb, const VertexBufferLayout &layout) const
@@ -22,8 +23,8 @@ void VertexArray::AddBuffer(const VertexBuffer &vb, const VertexBufferLayout &la
     for (size_t i = 0; i < attributes.size(); i++)
     {
         const auto &attribute = attributes[i];
-        glEnableVertexAttribArray(i);
-        glVertexAttribPointer(i, attribute.count, attribute.type, GL_FALSE, layout.GetStride(), (const void *)offset);
+        GL_CALL(glEnableVertexAttribArray(i));
+        GL_CALL(glVertexAttribPointer(i, attribute.count, attribute.type, GL_FALSE, layout.GetStride(), (const void *)offset));
         offset += attribute.count * BufferAttributes::GetSizeOfType(attribute.type);
     }
 }
@@ -37,12 +38,12 @@ void VertexArray::AddBuffer(const IndexBuffer &ib)
 
 void VertexArray::Bind() const
 {
-    glBindVertexArray(_rendererId);
+    GL_CALL(glBindVertexArray(_rendererId));
 }
 
 void VertexArray::Unbind() const
 {
-    glBindVertexArray(0);
+    GL_CALL(glBindVertexArray(0));
 }
 
 unsigned long VertexArray::GetElementsCount() const

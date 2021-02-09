@@ -4,15 +4,16 @@
 #include <stb/stb_image_resize.h>
 #include <iostream>
 #include "ImagePositionCalculator.h"
+#include "CheckGlErrors.h"
 
 Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs) : _resolutionScaleCalculator(rcs)
 {
     unsigned int textureIds[2];
-    glGenTextures(2, textureIds);
+    GL_CALL(glGenTextures(2, textureIds));
     _mainTextureId = textureIds[0];
     _blurryBackgroundTextureId = textureIds[1];
 
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_maxDimension);
+    GL_CALL(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_maxDimension));
 }
 
 PictureLoadResult Picture::Load(std::string path, int textureSlot)
@@ -27,12 +28,12 @@ PictureLoadResult Picture::Load(std::string path, int textureSlot)
             std::array<float, 16>{}};
     }
 
-    glActiveTexture(GL_TEXTURE0 + textureSlot);
-    glBindTexture(GL_TEXTURE_2D, _mainTextureId);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    GL_CALL(glActiveTexture(GL_TEXTURE0 + textureSlot));
+    GL_CALL(glBindTexture(GL_TEXTURE_2D, _mainTextureId));
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 
     if (_resolutionScaleCalculator->IsScallingRequired(width, height, _maxDimension))
     {
@@ -42,7 +43,7 @@ PictureLoadResult Picture::Load(std::string path, int textureSlot)
         int newHeight = scaledDimensions.second;
         unsigned char *output_pixels = (unsigned char *)malloc(newWidth * newHeight * bytesPerPixel);
         stbir_resize_uint8(loadedImage, width, height, 0, output_pixels, newWidth, newHeight, 0, bytesPerPixel);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, newWidth, newHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, output_pixels);
+        GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, newWidth, newHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, output_pixels));
         delete output_pixels;
     }
     else
@@ -52,8 +53,8 @@ PictureLoadResult Picture::Load(std::string path, int textureSlot)
         std::cout << "Image dimensions: (" << width << ", " << height << ")\n";
         std::cout << "*************************************\n";
 
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, loadedImage);
+        GL_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+        GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, loadedImage));
         std::cout << "**********LOADED***********************\n";
     }
 
