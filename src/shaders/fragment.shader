@@ -11,5 +11,7 @@ void main()
 {
     mediump vec4 colorEven = texture(oddTextureSlot, textureCoordinate);
     mediump vec4 colorOdd = texture(evenTextureSlot, textureCoordinate);
-    color = mix(colorEven, colorOdd, blendValue);
+    //color = mix(colorEven, colorOdd, blendValue);
+    colorEven.a = blendValue;
+    color = colorEven;
 }

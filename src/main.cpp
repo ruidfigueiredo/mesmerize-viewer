@@ -23,8 +23,30 @@
 #include "ResolutionScaleCalculator.h"
 #include "CheckGlErrors.h"
 
+#include <vector>
+#include <sys/types.h>
+#include <dirent.h>
+
+std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
+{
+    std::vector<std::string> results;
+    DIR *dirp = opendir(pathToFolder.c_str());
+    struct dirent *dp;
+    while((dp = readdir(dirp)) != nullptr) {
+        if (dp->d_type == DT_REG)
+            results.push_back(pathToFolder + "/" + dp->d_name);
+    }
+    closedir(dirp);
+    return results;
+}
+
+
 int main(void)
 {
+    auto results = GetFilePathsInFolder("/home/rdfi/Pictures/Croatia");
+    for(auto filePath : results) {
+        std::cout << filePath << std::endl;
+    }
     GLFWwindow *window;
 
     /* Initialize the library */
@@ -73,10 +95,10 @@ int main(void)
     program.Bind();
 
     auto rsc = std::make_shared<ResolutionScaleCalculator>();
-    Picture pl1{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
-    pl1.Load("/home/rdfi/Pictures/bird.JPG", 0);
-    Picture pl2{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
-    pl2.Load("/home/rdfi/Pictures/IMG_20201103_133626.jpg", 1);
+    Picture nudibranch{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
+    nudibranch.Load("/home/rdfi/Pictures/Croatia/nudibranche.jpg", 0);
+    Picture peixeMau{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
+    peixeMau.Load("/home/rdfi/Pictures/Croatia/peixe mau.jpg", 1);
 
     glfwSwapInterval(1);
 
@@ -101,7 +123,6 @@ int main(void)
         GL_CALL(ImGui::NewFrame());
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
-
             static int counter = 0;
 
             GL_CALL(ImGui::Begin("Hello, world!")); // Create a window called "Hello, world!" and append into it.
@@ -113,24 +134,17 @@ int main(void)
             GL_CALL(ImGui::SliderFloat("Blend", &blendValue, 0.0f, 1.0f));    // Edit 1 float using a slider from 0.0f to 1.0f
             GL_CALL(ImGui::ColorEdit3("clear color", (float *)&clear_color)); // Edit 3 floats representing a color
 
-            if (ImGui::Button("Button")) // Buttons return true when clicked (most widgets return true when edited/activated)
+            if (ImGui::Button("Button")){ // Buttons return true when clicked (most widgets return true when edited/activated)
                 counter++;
+                nudibranch.Load(results[counter], 0);
+            }
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
-
-            if (counter > 5)
-            {
-                selectedTextureSlot = (selectedTextureSlot == 0 ? 1 : 0);
-                pl1.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 0);
-                counter = 0;
-            }
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();
         }
 
-        program.SetUniformi("oddTextureSlot", 0);
-        program.SetUniformi("evenTextureSlot", 1);
         program.SetUniformf("blendValue", blendValue);
         //glm::mat4 projection = glm::ortho(0.0f * factor + (factor - 1.0f) * delta * 30.0f, 320.0f * factor + (factor - 1.0f) * delta * 30.0f, 0 * factor, 240 * factor, -1.0f, 1.0f);
         glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -1.0f, 1.0f);
@@ -141,9 +155,15 @@ int main(void)
 
         //GL_CALL(glDrawElements(GL_TRIANGLES, ib.GetNumberOfElements(), GL_UNSIGNED_INT, nullptr));
         program.Bind();
-        pl2.Render();
-        pl1.Render();
-        //pl2.Render();
+        program.SetUniformi("evenTextureSlot", 1);
+        program.SetUniformi("oddTextureSlot", 1);
+        program.SetUniformf("blendValue", 1.0f);
+        peixeMau.Render();
+        program.SetUniformi("evenTextureSlot", 0);
+        program.SetUniformi("oddTextureSlot", 0);
+        program.SetUniformf("blendValue", blendValue);
+        nudibranch.Render();
+        //peixeMau.Render();
         //GL_CALL(renderer.Draw(va, program));
 
         GL_CALL(ImGui::Render());
