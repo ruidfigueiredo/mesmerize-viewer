@@ -105,7 +105,7 @@ int main(void)
     Renderer renderer;
     /* Loop until the user closes the window */
     float factor = 1.0f;
-    float delta = 0.0001f;
+    float delta = 0.0005f;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     glm::vec3 translateVectorA(0.0f, 0.0f, 0.0f);
     glm::vec3 translateVectorB(0.0f, 0.0f, 0.0f);
@@ -149,18 +149,16 @@ int main(void)
         //glm::mat4 projection = glm::ortho(0.0f * factor + (factor - 1.0f) * delta * 30.0f, 320.0f * factor + (factor - 1.0f) * delta * 30.0f, 0 * factor, 240 * factor, -1.0f, 1.0f);
         glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -1.0f, 1.0f);
 
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-        glm::mat4 model{1.0f};
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(100*factor, 100*factor, 0));
+        glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.1f, 1.1f, 1.0f));
         program.SetUniformMat4f("mvp", projection * view * model);
 
         //GL_CALL(glDrawElements(GL_TRIANGLES, ib.GetNumberOfElements(), GL_UNSIGNED_INT, nullptr));
         program.Bind();
-        program.SetUniformi("evenTextureSlot", 1);
-        program.SetUniformi("oddTextureSlot", 1);
+        program.SetUniformi("textureSlot", 1);
         program.SetUniformf("blendValue", 1.0f);
         peixeMau.Render();
-        program.SetUniformi("evenTextureSlot", 0);
-        program.SetUniformi("oddTextureSlot", 0);
+        program.SetUniformi("textureSlot", 0);
         program.SetUniformf("blendValue", blendValue);
         nudibranch.Render();
         //peixeMau.Render();
@@ -171,7 +169,7 @@ int main(void)
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
-        if (factor < 0.9f || factor > 1.2f)
+        if (factor < 0.1f || factor > 1.0f)
         {
             delta = -delta;
         }
