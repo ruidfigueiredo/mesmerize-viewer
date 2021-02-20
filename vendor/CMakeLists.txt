@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.13.4)
 
 add_subdirectory(glfw)
 add_subdirectory(glew-2.1.0/build/cmake)

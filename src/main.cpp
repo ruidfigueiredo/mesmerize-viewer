@@ -72,36 +72,11 @@ int main(void)
     program.AddFragmentShader("shaders/fragment.shader");
     program.Bind();
 
-    VertexArray va;
-
-    //loadImageAndCreateVertexBuffer("./example.jpg");
-    //loadImageIntoSlot0("./example.jpg");
-    Picture pl1{std::make_shared<ResolutionScaleCalculator>()};
-    auto pl1LoadResult = pl1.Load("/home/rdfi/Pictures/bird.JPG", 0);
-    Picture pl2{std::make_shared<ResolutionScaleCalculator>()};
-    pl2.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 1);
-
-    std::cout << "----------------------\n";
-    for (auto i = 0; i < pl1LoadResult.VertexCoordinates.size(); i++)
-    {
-        if (i > 0 && i % 4 == 0)
-            std::cout << std::endl;
-        std::cout << std::to_string(pl1LoadResult.VertexCoordinates[i]) + " ";
-    }
-    std::cout << "\n----------------------\n";
-    float *triangleVertices = &pl1LoadResult.VertexCoordinates[0];
-    VertexBuffer vb(triangleVertices, sizeof(float) * pl1LoadResult.VertexCoordinates.size());
-    VertexBufferLayout twoFloatBufferLayout;
-    twoFloatBufferLayout.Push<float>(2);
-    twoFloatBufferLayout.Push<float>(2);
-    va.AddBuffer(vb, twoFloatBufferLayout);
-
-    uint indexes[] = {
-        0, 1, 2,
-        2, 3, 0};
-    IndexBuffer ib(indexes, 6);
-    va.AddBuffer(ib);
-    va.Bind();
+    auto rsc = std::make_shared<ResolutionScaleCalculator>();
+    Picture pl1{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
+    pl1.Load("/home/rdfi/Pictures/bird.JPG", 0);
+    Picture pl2{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
+    pl2.Load("/home/rdfi/Pictures/IMG_20201103_133626.jpg", 1);
 
     glfwSwapInterval(1);
 
@@ -165,7 +140,11 @@ int main(void)
         program.SetUniformMat4f("mvp", projection * view * model);
 
         //GL_CALL(glDrawElements(GL_TRIANGLES, ib.GetNumberOfElements(), GL_UNSIGNED_INT, nullptr));
-        GL_CALL(renderer.Draw(va, program));
+        program.Bind();
+        pl2.Render();
+        pl1.Render();
+        //pl2.Render();
+        //GL_CALL(renderer.Draw(va, program));
 
         GL_CALL(ImGui::Render());
         GL_CALL(ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()));

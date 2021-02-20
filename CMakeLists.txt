@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19.2)
+cmake_minimum_required(VERSION 3.13.4)
 project(MesmerizeClient)
 add_subdirectory(vendor)
 set(ProjectFiles 

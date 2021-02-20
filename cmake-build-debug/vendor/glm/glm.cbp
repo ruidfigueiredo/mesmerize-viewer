@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="glm"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\vendor\;CMake Files\vendor\glfw\;CMake Files\vendor\glfw\CMake\;CMake Files\vendor\glfw\src\;CMake Files\vendor\glew-2.1.0\;CMake Files\vendor\glew-2.1.0\build\;CMake Files\vendor\glew-2.1.0\build\cmake\;CMake Files\vendor\glm\;CMake Files\vendor\glm\glm\;CMake Files\vendor\googletest\;CMake Files\vendor\googletest\googlemock\;CMake Files\vendor\googletest\googlemock\cmake\;CMake Files\vendor\googletest\googletest\;CMake Files\vendor\googletest\googletest\cmake\;CMake Files\src\;CMake Files\src\tests\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glm"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glm/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glm/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glm/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\glfw\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/CMake/cmake_uninstall.cmake.in">
+			<Option virtualFolder="CMake Files\vendor\glfw\CMake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/CMake/glfw3.pc.in">
+			<Option virtualFolder="CMake Files\vendor\glfw\CMake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/CMake/glfw3Config.cmake.in">
+			<Option virtualFolder="CMake Files\vendor\glfw\CMake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\glfw\src\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/glfw_config.h.in">
+			<Option virtualFolder="CMake Files\vendor\glfw\src\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/glew.pc.in">
+			<Option virtualFolder="CMake Files\vendor\glew-2.1.0\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/build/cmake/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\glew-2.1.0\build\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glm/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\glm\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glm/glm/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\glm\glm\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\googletest\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\googletest\googlemock\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock/cmake/gmock.pc.in">
+			<Option virtualFolder="CMake Files\vendor\googletest\googlemock\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock/cmake/gmock_main.pc.in">
+			<Option virtualFolder="CMake Files\vendor\googletest\googlemock\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\googletest\googletest\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/cmake/Config.cmake.in">
+			<Option virtualFolder="CMake Files\vendor\googletest\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/cmake/gtest.pc.in">
+			<Option virtualFolder="CMake Files\vendor\googletest\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/cmake/gtest_main.pc.in">
+			<Option virtualFolder="CMake Files\vendor\googletest\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\vendor\googletest\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/tests/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\tests\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

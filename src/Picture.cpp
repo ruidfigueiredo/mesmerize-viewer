@@ -5,8 +5,17 @@
 #include <iostream>
 #include "ImagePositionCalculator.h"
 #include "CheckGlErrors.h"
+#include <thread>
+#include <algorithm>
+#include "VertexBuffer.h"
 
-Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs) : _resolutionScaleCalculator(rcs)
+Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator) :
+    _resolutionScaleCalculator(rcs),
+    _pictureLoadingState(PictureLoadingState::EMPTY),
+    _activeTextureSlot(0),
+    _maxDeviceWidth(1920),
+    _maxDeviceHeight(1080),
+    _imagePositionCalculator(imagePositionCalculator)
 {
     unsigned int textureIds[2];
     GL_CALL(glGenTextures(2, textureIds));
@@ -14,55 +23,105 @@ Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs) : _resolutionSc
     _blurryBackgroundTextureId = textureIds[1];
 
     GL_CALL(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_maxDimension));
+    _maxDimension = std::min(_maxDimension, 3960); //4K max, if possible
 }
 
-PictureLoadResult Picture::Load(std::string path, int textureSlot)
+Picture::~Picture() {
+    if (_loadingThread.joinable()){
+        _loadingThread.join(); //let it finish if it needs to
+    }
+}
+
+void Picture::Load(std::string path, int textureSlot)
 {
-    stbi_set_flip_vertically_on_load(true);
-    int width, height, bytesPerPixel;
-    unsigned char *loadedImage = stbi_load(path.c_str(), &width, &height, &bytesPerPixel, 3);
-    if (loadedImage == nullptr)
+    if (_loadingThread.joinable())
     {
-        return PictureLoadResult{
-            false,
-            std::array<float, 16>{}};
+        _loadingThread.join(); //this will block the rendering thread but should only happen if the image takes so long to load that there's a new one to replace it that will need to wait for the first to finish
     }
 
-    GL_CALL(glActiveTexture(GL_TEXTURE0 + textureSlot));
-    GL_CALL(glBindTexture(GL_TEXTURE_2D, _mainTextureId));
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+    _pictureLoadResult = {};
+    _pictureLoadResult.TextureSlot = textureSlot;
 
-    if (_resolutionScaleCalculator->IsScallingRequired(width, height, _maxDimension))
-    {
-        std::cout << "Scalling is required\n";
-        auto scaledDimensions = _resolutionScaleCalculator->ScaleToMaxDimension(width, height, _maxDimension);
-        int newWidth = scaledDimensions.first;
-        int newHeight = scaledDimensions.second;
-        unsigned char *output_pixels = (unsigned char *)malloc(newWidth * newHeight * bytesPerPixel);
-        stbir_resize_uint8(loadedImage, width, height, 0, output_pixels, newWidth, newHeight, 0, bytesPerPixel);
-        GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, newWidth, newHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, output_pixels));
-        delete output_pixels;
-    }
-    else
-    {
-        std::cout << "Scalling isn't required\n";
-        std::cout << "*************************************\n";
-        std::cout << "Image dimensions: (" << width << ", " << height << ")\n";
-        std::cout << "*************************************\n";
 
+    std::thread loadThead([path, this]{
+        std::cout << "Thread running\n";
+        stbi_set_flip_vertically_on_load(true);
+        unsigned char* loadedImage = stbi_load(path.c_str(), &_pictureLoadResult.Width, &_pictureLoadResult.Height, &_pictureLoadResult.BytesPerPixel, 3);
+        if (loadedImage == nullptr) {
+            std::cout << "Failed to load image in path: " << path << std::endl;
+            return;
+        }
+        if (_resolutionScaleCalculator->IsScallingRequired(_pictureLoadResult.Width, _pictureLoadResult.Height, _maxDimension))
+        {
+            std::cout << "Scaling is required\n";
+            auto scaledDimensions = _resolutionScaleCalculator->ScaleToMaxDimension(_pictureLoadResult.Width, _pictureLoadResult.Height, _maxDimension);
+            int newWidth = scaledDimensions.first;
+            int newHeight = scaledDimensions.second;
+            unsigned char *output_pixels = (unsigned char *)malloc(newWidth * newHeight * _pictureLoadResult.BytesPerPixel);
+            stbir_resize_uint8(loadedImage, _pictureLoadResult.Width, _pictureLoadResult.Height, 0, output_pixels, newWidth, newHeight, 0, _pictureLoadResult.BytesPerPixel);
+            stbi_image_free(loadedImage);
+            _pictureLoadResult.LoadedImage = output_pixels;
+            _pictureLoadResult.Width = newWidth;
+            _pictureLoadResult.Height = newHeight;
+            _pictureLoadResult.FreeImage = [this](){
+                delete _pictureLoadResult.LoadedImage;
+                _pictureLoadResult.LoadedImage = nullptr;
+            };
+        }else {
+            _pictureLoadResult.LoadedImage = loadedImage;
+            _pictureLoadResult.FreeImage = [this]() {
+                stbi_image_free(_pictureLoadResult.LoadedImage);
+                _pictureLoadResult.LoadedImage = nullptr;
+            };
+        }
+        _pictureLoadResult.VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(_maxDeviceWidth, _maxDeviceHeight, _pictureLoadResult.Width, _pictureLoadResult.Height);
+        _pictureLoadingState = PictureLoadingState::SEND_TO_GPU;
+    });
+
+    loadThead.detach();
+    _loadingThread = std::move(loadThead);
+}
+
+void Picture::Render()
+{
+    if (_pictureLoadingState == PictureLoadingState::SEND_TO_GPU)
+    {
+        std::cout << "SEND_TO_GPU!\n";
+        GL_CALL(glActiveTexture(GL_TEXTURE0 + _pictureLoadResult.TextureSlot));
+        GL_CALL(glBindTexture(GL_TEXTURE_2D, _mainTextureId));
+        GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+        GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+        GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+        GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
         GL_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
-        GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, loadedImage));
-        std::cout << "**********LOADED***********************\n";
-    }
+        GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, _pictureLoadResult.Width, _pictureLoadResult.Height, 0, GL_RGB, GL_UNSIGNED_BYTE, _pictureLoadResult.LoadedImage));
+        _pictureLoadResult.FreeImage();
 
-    //missing glActivateTexture(GL_TEXTURE0) with blurry version
-    //glBindTexture(GL_TEXTURE_2D, _blurryBackgroundTextureId)
-    ImagePositionCalculator ipc{_resolutionScaleCalculator};
-    stbi_image_free(loadedImage);
-    return PictureLoadResult{
-        true,
-        ipc.GetCenteredRectangleVertexCoordinates(1920, 1080, width, height)};
+        _vertexArray.reset();
+        _vertexBuffer.reset();
+        _indexBuffer.reset();
+        _vertexArray = std::make_shared<VertexArray>();
+        _vertexBuffer = std::make_shared<VertexBuffer>(&_pictureLoadResult.VertexCoordinates, sizeof(_pictureLoadResult.VertexCoordinates));
+        VertexBufferLayout twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout;
+        twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout.Push<float>(2);
+        twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout.Push<float>(2);
+        _vertexArray->AddBuffer(*_vertexBuffer, twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout);
+        uint indexes[] = {
+                0, 1, 2,
+                2, 3, 0};
+        _indexBuffer = std::make_shared<IndexBuffer>(indexes, 6);
+        _vertexArray->AddBuffer(*_indexBuffer);
+
+        _pictureLoadingState = PictureLoadingState::LOADED;
+        std::cout << "LOADED!\n";
+    }
+    else if (_pictureLoadingState == PictureLoadingState::LOADED)
+    {
+        GL_CALL(glActiveTexture(GL_TEXTURE0 + _pictureLoadResult.TextureSlot));
+        GL_CALL(glBindTexture(GL_TEXTURE_2D, _mainTextureId));
+        _vertexArray->Bind();
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        _vertexArray->Unbind();
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
 }

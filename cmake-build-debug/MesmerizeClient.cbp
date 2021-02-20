@@ -1,0 +1,1111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="MesmerizeClient"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\vendor\;CMake Files\vendor\glfw\;CMake Files\vendor\glfw\CMake\;CMake Files\vendor\glfw\src\;CMake Files\vendor\glew-2.1.0\;CMake Files\vendor\glew-2.1.0\build\;CMake Files\vendor\glew-2.1.0\build\cmake\;CMake Files\vendor\glm\;CMake Files\vendor\glm\glm\;CMake Files\vendor\googletest\;CMake Files\vendor\googletest\googlemock\;CMake Files\vendor\googletest\googlemock\cmake\;CMake Files\vendor\googletest\googletest\;CMake Files\vendor\googletest\googletest\cmake\;CMake Files\src\;CMake Files\src\tests\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MesmerizeClient">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/run" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glm/glm/.."/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui/imgui"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/shfcl"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/stb"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 MesmerizeClient"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MesmerizeClient/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/run" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glm/glm/.."/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui/imgui"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/shfcl"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/stb"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 MesmerizeClient/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="imgui">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/libimgui.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui/imgui"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 imgui"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="imgui/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/libimgui.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui/imgui"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 imgui/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="iir_gauss">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/libiir_gauss.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/shfcl"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 iir_gauss"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="iir_gauss/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/libiir_gauss.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/shfcl"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 iir_gauss/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="stb">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/libstb.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/stb"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 stb"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="stb/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/libstb.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/stb"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 stb/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="uninstall">
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/Makefile&quot;  VERBOSE=1 uninstall"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="glfw">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src/libglfw3.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_GLFW_USE_CONFIG_H"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 glfw"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="glfw/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src/libglfw3.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_GLFW_USE_CONFIG_H"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 glfw/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="glew">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/lib/libGLEWd.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGLEW_BUILD"/>
+					<Add option="-DGLEW_NO_GLU"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/build/cmake/../../include"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 glew"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="glew/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/lib/libGLEWd.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGLEW_BUILD"/>
+					<Add option="-DGLEW_NO_GLU"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/build/cmake/../../include"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 glew/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="glew_s">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/lib/libGLEWd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGLEW_STATIC"/>
+					<Add option="-DGLEW_NO_GLU"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/build/cmake/../../include"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 glew_s"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="glew_s/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/lib/libGLEWd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGLEW_STATIC"/>
+					<Add option="-DGLEW_NO_GLU"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/build/cmake/../../include"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 glew_s/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="visualinfo">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/bin/visualinfo" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGLEW_NO_GLU"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/build/cmake/../../include"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 visualinfo"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="visualinfo/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/bin/visualinfo" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGLEW_NO_GLU"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/build/cmake/../../include"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 visualinfo/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="glewinfo">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/bin/glewinfo" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGLEW_NO_GLU"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/build/cmake/../../include"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 glewinfo"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="glewinfo/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/bin/glewinfo" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGLEW_NO_GLU"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/build/cmake/../../include"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 glewinfo/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glew-2.1.0/build/cmake/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gmock_main">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/lib/libgmock_maind.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 gmock_main"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gmock_main/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/lib/libgmock_maind.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 gmock_main/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gmock">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/lib/libgmockd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 gmock"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gmock/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/lib/libgmockd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 gmock/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googlemock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest_main">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/lib/libgtest_maind.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 gtest_main"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest_main/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/lib/libgtest_maind.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 gtest_main/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/lib/libgtestd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 gtest"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/lib/libgtestd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 gtest/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/src/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/src/tests/Makefile&quot;  VERBOSE=1 test"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/src/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/src/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/src/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test/fast">
+				<Option output="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/src/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/include"/>
+					<Add directory="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/src/tests/Makefile&quot;  VERBOSE=1 test/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/src/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/src/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/src/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/cmake-build-debug/vendor/glfw/src/glfw_config.h">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/ImagePositionCalculator.cpp">
+			<Option target="MesmerizeClient"/>
+			<Option target="test"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/ImagePositionCalculator.h">
+			<Option target="MesmerizeClient"/>
+			<Option target="test"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/IndexBuffer.cpp">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/IndexBuffer.h">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/Picture.cpp">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/Picture.h">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/Renderer.cpp">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/Renderer.h">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/ResolutionScaleCalculator.cpp">
+			<Option target="MesmerizeClient"/>
+			<Option target="test"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/ResolutionScaleCalculator.h">
+			<Option target="MesmerizeClient"/>
+			<Option target="test"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/ShaderProgram.cpp">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/ShaderProgram.h">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/VertexArray.cpp">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/VertexArray.h">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/VertexBuffer.cpp">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/VertexBuffer.h">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/VertexBufferLayout.cpp">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/VertexBufferLayout.h">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/main.cpp">
+			<Option target="MesmerizeClient"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/tests/ImagePositionCalculatorTests.cpp">
+			<Option target="test"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/tests/ResolutionScaleCalculatorTests.cpp">
+			<Option target="test"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/tests/test_main.cpp">
+			<Option target="test"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/include/GL/glew.h">
+			<Option target="glew"/>
+			<Option target="glew_s"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/include/GL/glxew.h">
+			<Option target="glew"/>
+			<Option target="glew_s"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/include/GL/wglew.h">
+			<Option target="glew"/>
+			<Option target="glew_s"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/src/glew.c">
+			<Option target="glew"/>
+			<Option target="glew_s"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/src/glewinfo.c">
+			<Option target="glewinfo"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/src/visualinfo.c">
+			<Option target="visualinfo"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/include/GLFW/glfw3.h">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/include/GLFW/glfw3native.h">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/context.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/egl_context.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/egl_context.h">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/glx_context.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/glx_context.h">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/init.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/input.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/internal.h">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/linux_joystick.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/linux_joystick.h">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/mappings.h">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/monitor.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/osmesa_context.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/osmesa_context.h">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/posix_thread.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/posix_thread.h">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/posix_time.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/posix_time.h">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/vulkan.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/window.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/x11_init.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/x11_monitor.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/x11_platform.h">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/x11_window.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/xkb_unicode.c">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/xkb_unicode.h">
+			<Option target="glfw"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock/src/gmock-all.cc">
+			<Option target="gmock"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock/src/gmock_main.cc">
+			<Option target="gmock_main"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/src/gtest-all.cc">
+			<Option target="gtest"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/src/gtest_main.cc">
+			<Option target="gtest_main"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/iir_gauss_blur.cpp">
+			<Option target="iir_gauss"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui/imgui/backends/imgui_impl_glfw.cpp">
+			<Option target="imgui"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui/imgui/backends/imgui_impl_glfw.h">
+			<Option target="imgui"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui/imgui/backends/imgui_impl_opengl3.cpp">
+			<Option target="imgui"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui/imgui/backends/imgui_impl_opengl3.h">
+			<Option target="imgui"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui/imgui/imgui.cpp">
+			<Option target="imgui"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui/imgui/imgui.h">
+			<Option target="imgui"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui/imgui/imgui_draw.cpp">
+			<Option target="imgui"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui/imgui/imgui_tables.cpp">
+			<Option target="imgui"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/imgui/imgui/imgui_widgets.cpp">
+			<Option target="imgui"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/stb/stb_image.cpp">
+			<Option target="stb"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/stb/stb_image_resize.cpp">
+			<Option target="stb"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\glfw\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/CMake/cmake_uninstall.cmake.in">
+			<Option virtualFolder="CMake Files\vendor\glfw\CMake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/CMake/glfw3.pc.in">
+			<Option virtualFolder="CMake Files\vendor\glfw\CMake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/CMake/glfw3Config.cmake.in">
+			<Option virtualFolder="CMake Files\vendor\glfw\CMake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\glfw\src\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glfw/src/glfw_config.h.in">
+			<Option virtualFolder="CMake Files\vendor\glfw\src\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/glew.pc.in">
+			<Option virtualFolder="CMake Files\vendor\glew-2.1.0\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glew-2.1.0/build/cmake/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\glew-2.1.0\build\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glm/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\glm\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/glm/glm/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\glm\glm\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\googletest\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\googletest\googlemock\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock/cmake/gmock.pc.in">
+			<Option virtualFolder="CMake Files\vendor\googletest\googlemock\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googlemock/cmake/gmock_main.pc.in">
+			<Option virtualFolder="CMake Files\vendor\googletest\googlemock\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\vendor\googletest\googletest\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/cmake/Config.cmake.in">
+			<Option virtualFolder="CMake Files\vendor\googletest\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/cmake/gtest.pc.in">
+			<Option virtualFolder="CMake Files\vendor\googletest\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/cmake/gtest_main.pc.in">
+			<Option virtualFolder="CMake Files\vendor\googletest\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/vendor/googletest/googletest/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\vendor\googletest\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/rdfi/Projects/mesmerize-viewer/src/tests/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\tests\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
