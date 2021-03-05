@@ -13,15 +13,20 @@ std::pair<int, int> ResolutionScaleCalculator::ScaleToMaxDimension(int width, in
     return std::pair<int, int>{(int)width * scale, (int)height * scale};
 }
 
-std::pair<int, int> ResolutionScaleCalculator::ScaleToDeviceResolution(int deviceWidth, int deviceHeight, int width, int height)
+std::pair<int, int> ResolutionScaleCalculator::ScaleToCover(int deviceWidth, int deviceHeight, int width, int height)
 {
-    const auto largestDimension = std::max(width, height);
-    int targetMaxResolution;
-    if (largestDimension == width)
-        targetMaxResolution = deviceWidth;
-    else
-        targetMaxResolution = deviceHeight;
+    float scale = 1.0f;
+    scale = 1.0f * deviceWidth / width;
+    scale = std::max(scale, 1.0f * deviceHeight / height);
 
-    const float scale = 1.0f * targetMaxResolution / largestDimension;
+    return std::pair<int, int>{(int)width * scale, (int)height * scale};
+}
+
+std::pair<int, int> ResolutionScaleCalculator::ScaleToFit(int deviceWidth, int deviceHeight, int width, int height)
+{
+    float scale = 1.0f;
+    scale = 1.0f * deviceWidth / width;
+    scale = std::min(scale, 1.0f * deviceHeight / height);
+
     return std::pair<int, int>{(int)width * scale, (int)height * scale};
 }

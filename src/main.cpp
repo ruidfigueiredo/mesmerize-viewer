@@ -32,7 +32,8 @@ std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
     std::vector<std::string> results;
     DIR *dirp = opendir(pathToFolder.c_str());
     struct dirent *dp;
-    while((dp = readdir(dirp)) != nullptr) {
+    while ((dp = readdir(dirp)) != nullptr)
+    {
         if (dp->d_type == DT_REG)
             results.push_back(pathToFolder + "/" + dp->d_name);
     }
@@ -40,11 +41,11 @@ std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
     return results;
 }
 
-
 int main(void)
 {
-    auto results = GetFilePathsInFolder("/home/rdfi/Pictures/Croatia");
-    for(auto filePath : results) {
+    auto results = GetFilePathsInFolder("/home/rdfi/Pictures");
+    for (auto filePath : results)
+    {
         std::cout << filePath << std::endl;
     }
     GLFWwindow *window;
@@ -54,7 +55,7 @@ int main(void)
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(1920, 1080, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(3840, 2160, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -96,19 +97,14 @@ int main(void)
 
     auto rsc = std::make_shared<ResolutionScaleCalculator>();
     Picture nudibranch{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
-    nudibranch.Load("/home/rdfi/Pictures/Croatia/nudibranche.jpg", 0);
+    nudibranch.Load("/home/rdfi/Pictures/Moon.jpg", 0);
     Picture peixeMau{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
-    peixeMau.Load("/home/rdfi/Pictures/Croatia/peixe mau.jpg", 1);
+    peixeMau.Load("/home/rdfi/Pictures/IMG_20201103_133626.jpg", 1);
 
     glfwSwapInterval(1);
 
     Renderer renderer;
     /* Loop until the user closes the window */
-    float factor = 1.0f;
-    float delta = 0.0005f;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-    glm::vec3 translateVectorA(0.0f, 0.0f, 0.0f);
-    glm::vec3 translateVectorB(0.0f, 0.0f, 0.0f);
     int selectedTextureSlot = 0;
     float blendValue = 0.0f;
     while (!glfwWindowShouldClose(window))
@@ -125,18 +121,18 @@ int main(void)
         {
             static int counter = 0;
 
-            GL_CALL(ImGui::Begin("Hello, world!")); // Create a window called "Hello, world!" and append into it.
+            GL_CALL(ImGui::Begin("Debug"));                                // Create a window called "Hello, world!" and append into it.
+            GL_CALL(ImGui::SliderFloat("Blend", &blendValue, 0.0f, 1.0f)); // Edit 1 float using a slider from 0.0f to 1.0f
 
-            GL_CALL(ImGui::Text("This is some useful text.")); // Display some text (you can use a format strings too)
-            GL_CALL(ImGui::SliderFloat3("TranslateA", &translateVectorA.x, 0.0f, 1080.0f));
-            GL_CALL(ImGui::SliderFloat3("TranslateB", &translateVectorB.x, 0.0f, 1080.0f));
-            GL_CALL(ImGui::SliderFloat("Scale", &factor, 0.0f, 5.0f));
-            GL_CALL(ImGui::SliderFloat("Blend", &blendValue, 0.0f, 1.0f));    // Edit 1 float using a slider from 0.0f to 1.0f
-            GL_CALL(ImGui::ColorEdit3("clear color", (float *)&clear_color)); // Edit 3 floats representing a color
+            if (ImGui::Button("<"))
+            { // Buttons return true when clicked (most widgets return true when edited/activated)
+                nudibranch.Load(results[--counter], 0);
+            }
 
-            if (ImGui::Button("Button")){ // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-                nudibranch.Load(results[counter], 0);
+            ImGui::SameLine();
+            if (ImGui::Button(">"))
+            { // Buttons return true when clicked (most widgets return true when edited/activated)
+                nudibranch.Load(results[++counter], 0);
             }
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
@@ -146,14 +142,12 @@ int main(void)
         }
 
         program.SetUniformf("blendValue", blendValue);
-        //glm::mat4 projection = glm::ortho(0.0f * factor + (factor - 1.0f) * delta * 30.0f, 320.0f * factor + (factor - 1.0f) * delta * 30.0f, 0 * factor, 240 * factor, -1.0f, 1.0f);
-        glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -1.0f, 1.0f);
+        glm::mat4 projection = glm::ortho(0.0f, 3840.0f, 0.0f, 2160.0f, -1.0f, 1.0f);
 
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(100*factor, 100*factor, 0));
-        glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.1f, 1.1f, 1.0f));
+        glm::mat4 view{1.0f};
+        glm::mat4 model{1.0f};
         program.SetUniformMat4f("mvp", projection * view * model);
 
-        //GL_CALL(glDrawElements(GL_TRIANGLES, ib.GetNumberOfElements(), GL_UNSIGNED_INT, nullptr));
         program.Bind();
         program.SetUniformi("textureSlot", 1);
         program.SetUniformf("blendValue", 1.0f);
@@ -161,19 +155,11 @@ int main(void)
         program.SetUniformi("textureSlot", 0);
         program.SetUniformf("blendValue", blendValue);
         nudibranch.Render();
-        //peixeMau.Render();
-        //GL_CALL(renderer.Draw(va, program));
 
         GL_CALL(ImGui::Render());
         GL_CALL(ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()));
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
-
-        if (factor < 0.1f || factor > 1.0f)
-        {
-            delta = -delta;
-        }
-        factor -= delta;
 
         /* Poll for and process events */
         glfwPollEvents();

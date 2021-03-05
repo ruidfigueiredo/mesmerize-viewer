@@ -4,8 +4,7 @@
 
 std::array<float, 16> ImagePositionCalculator::GetCenteredRectangleVertexCoordinates(int deviceWidth, int deviceHeight, int imageWidth, int imageHeight)
 {
-    int maxDeviceDimension = std::max(deviceWidth, deviceHeight);
-    auto newDimensions = _resolutionScaleCalculator->ScaleToDeviceResolution(1920, 1080, imageWidth, imageHeight);
+    auto newDimensions = _resolutionScaleCalculator->ScaleToFit(deviceWidth, deviceHeight, imageWidth, imageHeight);
     const int width = newDimensions.first;
     const int height = newDimensions.second;
 

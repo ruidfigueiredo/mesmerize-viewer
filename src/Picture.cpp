@@ -9,13 +9,12 @@
 #include <algorithm>
 #include "VertexBuffer.h"
 
-Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator) :
-    _resolutionScaleCalculator(rcs),
-    _pictureLoadingState(PictureLoadingState::EMPTY),
-    _activeTextureSlot(0),
-    _maxDeviceWidth(1920),
-    _maxDeviceHeight(1080),
-    _imagePositionCalculator(imagePositionCalculator)
+Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator) : _resolutionScaleCalculator(rcs),
+                                                                                                                                     _pictureLoadingState(PictureLoadingState::EMPTY),
+                                                                                                                                     _activeTextureSlot(0),
+                                                                                                                                     _maxDeviceWidth(3840),
+                                                                                                                                     _maxDeviceHeight(2160),
+                                                                                                                                     _imagePositionCalculator(imagePositionCalculator)
 {
     unsigned int textureIds[2];
     GL_CALL(glGenTextures(2, textureIds));
@@ -26,8 +25,10 @@ Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs, std::shared_ptr
     _maxDimension = std::min(_maxDimension, 3960); //4K max, if possible
 }
 
-Picture::~Picture() {
-    if (_loadingThread.joinable()){
+Picture::~Picture()
+{
+    if (_loadingThread.joinable())
+    {
         _loadingThread.join(); //let it finish if it needs to
     }
 }
@@ -42,18 +43,18 @@ void Picture::Load(std::string path, int textureSlot)
     _pictureLoadResult = {};
     _pictureLoadResult.TextureSlot = textureSlot;
 
-
-    std::thread loadThead([path, this]{
-        std::cout << "Thread running\n";
+    std::thread loadThead([path, this] {
+        std::cout << "Thread running, loading " << path << "\n";
         stbi_set_flip_vertically_on_load(true);
-        unsigned char* loadedImage = stbi_load(path.c_str(), &_pictureLoadResult.Width, &_pictureLoadResult.Height, &_pictureLoadResult.BytesPerPixel, 3);
-        if (loadedImage == nullptr) {
+        unsigned char *loadedImage = stbi_load(path.c_str(), &_pictureLoadResult.Width, &_pictureLoadResult.Height, &_pictureLoadResult.BytesPerPixel, 3);
+        if (loadedImage == nullptr)
+        {
             std::cout << "Failed to load image in path: " << path << std::endl;
             return;
         }
         if (_resolutionScaleCalculator->IsScallingRequired(_pictureLoadResult.Width, _pictureLoadResult.Height, _maxDimension))
         {
-            std::cout << "Scaling is required\n";
+            std::cout << "Scaling is required (" << _pictureLoadResult.Width << " x " << _pictureLoadResult.Height << ")\n";
             auto scaledDimensions = _resolutionScaleCalculator->ScaleToMaxDimension(_pictureLoadResult.Width, _pictureLoadResult.Height, _maxDimension);
             int newWidth = scaledDimensions.first;
             int newHeight = scaledDimensions.second;
@@ -63,18 +64,22 @@ void Picture::Load(std::string path, int textureSlot)
             _pictureLoadResult.LoadedImage = output_pixels;
             _pictureLoadResult.Width = newWidth;
             _pictureLoadResult.Height = newHeight;
-            _pictureLoadResult.FreeImage = [this](){
+            _pictureLoadResult.FreeImage = [this]() {
                 delete _pictureLoadResult.LoadedImage;
                 _pictureLoadResult.LoadedImage = nullptr;
             };
-        }else {
+        }
+        else
+        {
             _pictureLoadResult.LoadedImage = loadedImage;
             _pictureLoadResult.FreeImage = [this]() {
                 stbi_image_free(_pictureLoadResult.LoadedImage);
                 _pictureLoadResult.LoadedImage = nullptr;
             };
         }
-        _pictureLoadResult.VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(_maxDeviceWidth, _maxDeviceHeight, _pictureLoadResult.Width, _pictureLoadResult.Height);
+        auto scaleToCover = _resolutionScaleCalculator->ScaleToFit(3840, 2160, _pictureLoadResult.Width, _pictureLoadResult.Height);
+        std::cout << "Scale to fit results: " << scaleToCover.first << "x" << scaleToCover.second << "\n";
+        _pictureLoadResult.VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(_maxDeviceWidth, _maxDeviceHeight, scaleToCover.first, scaleToCover.second);
         _pictureLoadingState = PictureLoadingState::SEND_TO_GPU;
     });
 
@@ -107,8 +112,8 @@ void Picture::Render()
         twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout.Push<float>(2);
         _vertexArray->AddBuffer(*_vertexBuffer, twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout);
         uint indexes[] = {
-                0, 1, 2,
-                2, 3, 0};
+            0, 1, 2,
+            2, 3, 0};
         _indexBuffer = std::make_shared<IndexBuffer>(indexes, 6);
         _vertexArray->AddBuffer(*_indexBuffer);
 
