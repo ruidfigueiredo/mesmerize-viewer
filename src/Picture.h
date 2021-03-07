@@ -6,8 +6,10 @@
 #include "ImagePositionCalculator.h"
 #include <thread>
 #include <functional>
+#include <mutex>
 
-enum PictureLoadingState {
+enum PictureLoadingState
+{
     EMPTY,
     SEND_TO_GPU,
     LOADED
@@ -40,6 +42,7 @@ class Picture
     int _maxDeviceWidth;
     int _maxDeviceHeight;
     int _activeTextureSlot;
+    std::mutex _imageLoadingMutex;
 
 public:
     Picture(std::shared_ptr<ResolutionScaleCalculator> rsc, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator);

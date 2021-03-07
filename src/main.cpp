@@ -27,6 +27,14 @@
 #include <sys/types.h>
 #include <dirent.h>
 
+bool endsWith(std::string str, std::string ending)
+{
+    if (str.length() < ending.length())
+        return false;
+    auto res = str.substr(str.length() - ending.length());
+    return (res == ending);
+}
+
 std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
 {
     std::vector<std::string> results;
@@ -34,7 +42,7 @@ std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
     struct dirent *dp;
     while ((dp = readdir(dirp)) != nullptr)
     {
-        if (dp->d_type == DT_REG)
+        if (dp->d_type == DT_REG && endsWith(dp->d_name, "jpg"))
             results.push_back(pathToFolder + "/" + dp->d_name);
     }
     closedir(dirp);
@@ -96,10 +104,10 @@ int main(void)
     program.Bind();
 
     auto rsc = std::make_shared<ResolutionScaleCalculator>();
-    Picture nudibranch{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
-    nudibranch.Load("/home/rdfi/Pictures/Moon.jpg", 0);
-    Picture peixeMau{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
-    peixeMau.Load("/home/rdfi/Pictures/IMG_20201103_133626.jpg", 1);
+    Picture picture1{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
+    picture1.Load("/home/rdfi/Pictures/Moon.jpg", 0);
+    Picture picture2{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
+    picture2.Load("/home/rdfi/Pictures/IMG_20201103_133626.jpg", 1);
 
     glfwSwapInterval(1);
 
@@ -126,13 +134,13 @@ int main(void)
 
             if (ImGui::Button("<"))
             { // Buttons return true when clicked (most widgets return true when edited/activated)
-                nudibranch.Load(results[--counter], 0);
+                picture1.Load(results[--counter], 0);
             }
 
             ImGui::SameLine();
             if (ImGui::Button(">"))
             { // Buttons return true when clicked (most widgets return true when edited/activated)
-                nudibranch.Load(results[++counter], 0);
+                picture1.Load(results[++counter], 0);
             }
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
@@ -151,10 +159,10 @@ int main(void)
         program.Bind();
         program.SetUniformi("textureSlot", 1);
         program.SetUniformf("blendValue", 1.0f);
-        peixeMau.Render();
+        picture2.Render();
         program.SetUniformi("textureSlot", 0);
         program.SetUniformf("blendValue", blendValue);
-        nudibranch.Render();
+        picture1.Render();
 
         GL_CALL(ImGui::Render());
         GL_CALL(ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()));

@@ -37,13 +37,19 @@ void Picture::Load(std::string path, int textureSlot)
 {
     if (_loadingThread.joinable())
     {
+        std::cout << "CALLING JOIN, EXPECTING THAT THE THREAD WILL BLOCK!!!\n";
         _loadingThread.join(); //this will block the rendering thread but should only happen if the image takes so long to load that there's a new one to replace it that will need to wait for the first to finish
+    }
+    else
+    {
+        std::cout << "NOT CALLING JOIN, THE THREAD IS NOT JOINABLE???\n";
     }
 
     _pictureLoadResult = {};
     _pictureLoadResult.TextureSlot = textureSlot;
 
-    std::thread loadThead([path, this] {
+    std::thread loadThread([path, this] {
+        std::lock_guard<std::mutex> lockGuard{_imageLoadingMutex};
         std::cout << "Thread running, loading " << path << "\n";
         stbi_set_flip_vertically_on_load(true);
         unsigned char *loadedImage = stbi_load(path.c_str(), &_pictureLoadResult.Width, &_pictureLoadResult.Height, &_pictureLoadResult.BytesPerPixel, 3);
@@ -64,7 +70,7 @@ void Picture::Load(std::string path, int textureSlot)
             _pictureLoadResult.LoadedImage = output_pixels;
             _pictureLoadResult.Width = newWidth;
             _pictureLoadResult.Height = newHeight;
-            _pictureLoadResult.FreeImage = [this]() {
+            _pictureLoadResult.FreeImage = [this] {
                 delete _pictureLoadResult.LoadedImage;
                 _pictureLoadResult.LoadedImage = nullptr;
             };
@@ -72,19 +78,18 @@ void Picture::Load(std::string path, int textureSlot)
         else
         {
             _pictureLoadResult.LoadedImage = loadedImage;
-            _pictureLoadResult.FreeImage = [this]() {
+            _pictureLoadResult.FreeImage = [this] {
                 stbi_image_free(_pictureLoadResult.LoadedImage);
                 _pictureLoadResult.LoadedImage = nullptr;
             };
         }
-        auto scaleToCover = _resolutionScaleCalculator->ScaleToFit(3840, 2160, _pictureLoadResult.Width, _pictureLoadResult.Height);
-        std::cout << "Scale to fit results: " << scaleToCover.first << "x" << scaleToCover.second << "\n";
-        _pictureLoadResult.VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(_maxDeviceWidth, _maxDeviceHeight, scaleToCover.first, scaleToCover.second);
+        auto scaledDimentions = _resolutionScaleCalculator->ScaleToFit(3840, 2160, _pictureLoadResult.Width, _pictureLoadResult.Height);
+        std::cout << "Scale to fit results: " << scaledDimentions.first << "x" << scaledDimentions.second << "\n";
+        _pictureLoadResult.VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(_maxDeviceWidth, _maxDeviceHeight, scaledDimentions.first, scaledDimentions.second);
         _pictureLoadingState = PictureLoadingState::SEND_TO_GPU;
     });
-
-    loadThead.detach();
-    _loadingThread = std::move(loadThead);
+    loadThread.detach();
+    _loadingThread = std::move(loadThread);
 }
 
 void Picture::Render()
