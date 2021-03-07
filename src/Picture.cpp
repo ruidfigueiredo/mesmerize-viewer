@@ -8,21 +8,17 @@
 #include <thread>
 #include <algorithm>
 #include "VertexBuffer.h"
+#include "DeviceInformation.h"
 
 Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator) : _resolutionScaleCalculator(rcs),
                                                                                                                                      _pictureLoadingState(PictureLoadingState::EMPTY),
                                                                                                                                      _activeTextureSlot(0),
-                                                                                                                                     _maxDeviceWidth(3840),
-                                                                                                                                     _maxDeviceHeight(2160),
                                                                                                                                      _imagePositionCalculator(imagePositionCalculator)
 {
     unsigned int textureIds[2];
     GL_CALL(glGenTextures(2, textureIds));
     _mainTextureId = textureIds[0];
     _blurryBackgroundTextureId = textureIds[1];
-
-    GL_CALL(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_maxDimension));
-    _maxDimension = std::min(_maxDimension, 3960); //4K max, if possible
 }
 
 Picture::~Picture()
@@ -58,10 +54,10 @@ void Picture::Load(std::string path, int textureSlot)
             std::cout << "Failed to load image in path: " << path << std::endl;
             return;
         }
-        if (_resolutionScaleCalculator->IsScallingRequired(_pictureLoadResult.Width, _pictureLoadResult.Height, _maxDimension))
+        if (_resolutionScaleCalculator->IsScallingRequired(_pictureLoadResult.Width, _pictureLoadResult.Height, DeviceInformation::getMaxTextureSize()))
         {
             std::cout << "Scaling is required (" << _pictureLoadResult.Width << " x " << _pictureLoadResult.Height << ")\n";
-            auto scaledDimensions = _resolutionScaleCalculator->ScaleToMaxDimension(_pictureLoadResult.Width, _pictureLoadResult.Height, _maxDimension);
+            auto scaledDimensions = _resolutionScaleCalculator->ScaleToMaxDimension(_pictureLoadResult.Width, _pictureLoadResult.Height, DeviceInformation::getMaxTextureSize());
             int newWidth = scaledDimensions.first;
             int newHeight = scaledDimensions.second;
             unsigned char *output_pixels = (unsigned char *)malloc(newWidth * newHeight * _pictureLoadResult.BytesPerPixel);
@@ -83,9 +79,9 @@ void Picture::Load(std::string path, int textureSlot)
                 _pictureLoadResult.LoadedImage = nullptr;
             };
         }
-        auto scaledDimentions = _resolutionScaleCalculator->ScaleToFit(3840, 2160, _pictureLoadResult.Width, _pictureLoadResult.Height);
+        auto scaledDimentions = _resolutionScaleCalculator->ScaleToFit(DeviceInformation::getWidth(), DeviceInformation::getHeight(), _pictureLoadResult.Width, _pictureLoadResult.Height);
         std::cout << "Scale to fit results: " << scaledDimentions.first << "x" << scaledDimentions.second << "\n";
-        _pictureLoadResult.VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(_maxDeviceWidth, _maxDeviceHeight, scaledDimentions.first, scaledDimentions.second);
+        _pictureLoadResult.VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(DeviceInformation::getWidth(), DeviceInformation::getHeight(), scaledDimentions.first, scaledDimentions.second);
         _pictureLoadingState = PictureLoadingState::SEND_TO_GPU;
     });
     loadThread.detach();

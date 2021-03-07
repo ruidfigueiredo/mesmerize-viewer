@@ -18,6 +18,7 @@
 #include "VertexBufferLayout.h"
 #include "ShaderProgram.h"
 #include "Renderer.h"
+#include "DeviceInformation.h"
 
 #include "Picture.h"
 #include "ResolutionScaleCalculator.h"
@@ -49,6 +50,7 @@ std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
     return results;
 }
 
+
 int main(void)
 {
     auto results = GetFilePathsInFolder("/home/rdfi/Pictures");
@@ -62,14 +64,18 @@ int main(void)
     if (!glfwInit())
         return -1;
 
+    const GLFWvidmode *vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    int deviceWidth = vidMode->width;
+    int deviceHeight = vidMode->height;
+    
+    
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(3840, 2160, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(0.8*deviceWidth, 0.8*deviceHeight, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
         return -1;
     }
-
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
@@ -78,6 +84,15 @@ int main(void)
     GL_CALL(ImGui_ImplOpenGL3_Init("#version 300 es"));
 
     GLenum err = glewInit();
+
+    DeviceInformation::init(window, 0.8*deviceWidth, 0.8*deviceHeight);
+    // std::cout << "-------------------------------------\n";
+    // std::cout << "DeviceInformation::getDeviceWidth()" << DeviceInformation::getDeviceWidth() << "\n";
+    // std::cout << "DeviceInformation::getDeviceHeight()" << DeviceInformation::getDeviceHeight() << "\n";
+    // std::cout << "DeviceInformation::getMaxTextureSize()" << DeviceInformation::getMaxTextureSize() << "\n";
+    // std::cout << "-------------------------------------\n";
+    // return 0;
+
 
     if (GLEW_OK != err)
     {
@@ -150,7 +165,7 @@ int main(void)
         }
 
         program.SetUniformf("blendValue", blendValue);
-        glm::mat4 projection = glm::ortho(0.0f, 3840.0f, 0.0f, 2160.0f, -1.0f, 1.0f);
+        glm::mat4 projection = glm::ortho(0.0f, 1.0f*DeviceInformation::getWidth(), 0.0f, 1.0f*DeviceInformation::getHeight(), -1.0f, 1.0f);
 
         glm::mat4 view{1.0f};
         glm::mat4 model{1.0f};

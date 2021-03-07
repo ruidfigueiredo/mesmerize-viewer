@@ -35,12 +35,9 @@ class Picture
     std::shared_ptr<VertexArray> _vertexArray;
     std::shared_ptr<VertexBuffer> _vertexBuffer;
     std::shared_ptr<IndexBuffer> _indexBuffer;
-    int _maxDimension;
     PictureLoadingState _pictureLoadingState;
     PictureLoadResult _pictureLoadResult;
     std::thread _loadingThread;
-    int _maxDeviceWidth;
-    int _maxDeviceHeight;
     int _activeTextureSlot;
     std::mutex _imageLoadingMutex;
 

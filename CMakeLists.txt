@@ -11,6 +11,7 @@ set(ProjectFiles
     "src/ImagePositionCalculator.cpp"
     "src/ResolutionScaleCalculator.cpp"
     "src/Picture.cpp"
+    "src/DeviceInformation.cpp"
     "src/main.cpp"
     )
 add_executable(${PROJECT_NAME} ${ProjectFiles})
