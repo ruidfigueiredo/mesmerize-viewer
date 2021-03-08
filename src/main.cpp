@@ -50,7 +50,6 @@ std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
     return results;
 }
 
-
 int main(void)
 {
     auto results = GetFilePathsInFolder("/home/rdfi/Pictures");
@@ -67,10 +66,9 @@ int main(void)
     const GLFWvidmode *vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
     int deviceWidth = vidMode->width;
     int deviceHeight = vidMode->height;
-    
-    
+
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(0.8*deviceWidth, 0.8*deviceHeight, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(2872 /*0.8 * deviceWidth*/, 1728 /*0.8 * deviceHeight*/, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -85,14 +83,13 @@ int main(void)
 
     GLenum err = glewInit();
 
-    DeviceInformation::init(window, 0.8*deviceWidth, 0.8*deviceHeight);
+    DeviceInformation::init(window, 2872 /*0.8 * deviceWidth*/, 1728 /*0.8 * deviceHeight*/);
     // std::cout << "-------------------------------------\n";
     // std::cout << "DeviceInformation::getDeviceWidth()" << DeviceInformation::getDeviceWidth() << "\n";
     // std::cout << "DeviceInformation::getDeviceHeight()" << DeviceInformation::getDeviceHeight() << "\n";
     // std::cout << "DeviceInformation::getMaxTextureSize()" << DeviceInformation::getMaxTextureSize() << "\n";
     // std::cout << "-------------------------------------\n";
     // return 0;
-
 
     if (GLEW_OK != err)
     {
@@ -101,9 +98,6 @@ int main(void)
         fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
     }
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
-    int maxTextureSize;
-    GL_CALL(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize));
-    std::cout << "MAX Texture size is " << maxTextureSize << std::endl;
 
     // During init, enable debug output
     GL_CALL(glEnable(GL_DEBUG_OUTPUT));
@@ -118,10 +112,11 @@ int main(void)
     program.AddFragmentShader("shaders/fragment.shader");
     program.Bind();
 
-    auto rsc = std::make_shared<ResolutionScaleCalculator>();
-    Picture picture1{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
+    auto resolutionScaleCalculator = std::make_shared<ResolutionScaleCalculator>();
+    auto imagePositionCalculator = std::make_shared<ImagePositionCalculator>();
+    Picture picture1{resolutionScaleCalculator, imagePositionCalculator};
     picture1.Load("/home/rdfi/Pictures/Moon.jpg", 0);
-    Picture picture2{rsc, std::make_shared<ImagePositionCalculator>(rsc)};
+    Picture picture2{resolutionScaleCalculator, imagePositionCalculator};
     picture2.Load("/home/rdfi/Pictures/IMG_20201103_133626.jpg", 1);
 
     glfwSwapInterval(1);
@@ -165,16 +160,16 @@ int main(void)
         }
 
         program.SetUniformf("blendValue", blendValue);
-        glm::mat4 projection = glm::ortho(0.0f, 1.0f*DeviceInformation::getWidth(), 0.0f, 1.0f*DeviceInformation::getHeight(), -1.0f, 1.0f);
+        glm::mat4 projection = glm::ortho(0.0f, 1.0f * DeviceInformation::getWidth(), 0.0f, 1.0f * DeviceInformation::getHeight(), -1.0f, 1.0f);
 
         glm::mat4 view{1.0f};
         glm::mat4 model{1.0f};
         program.SetUniformMat4f("mvp", projection * view * model);
 
         program.Bind();
-        program.SetUniformi("textureSlot", 1);
-        program.SetUniformf("blendValue", 1.0f);
-        picture2.Render();
+        // program.SetUniformi("textureSlot", 1);
+        // program.SetUniformf("blendValue", 1.0f);
+        // picture2.Render();
         program.SetUniformi("textureSlot", 0);
         program.SetUniformf("blendValue", blendValue);
         picture1.Render();

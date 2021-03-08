@@ -24,6 +24,7 @@ struct PictureLoadResult
     unsigned char *LoadedImage;
     std::array<float, 16> VertexCoordinates;
     std::function<void()> FreeImage;
+    std::string Path;
 };
 
 class Picture
@@ -40,6 +41,9 @@ class Picture
     std::thread _loadingThread;
     int _activeTextureSlot;
     std::mutex _imageLoadingMutex;
+
+    void SendToGpu();
+    void RenderPicture();
 
 public:
     Picture(std::shared_ptr<ResolutionScaleCalculator> rsc, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator);
