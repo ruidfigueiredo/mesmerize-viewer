@@ -42,8 +42,9 @@ void Picture::Load(std::string path, int textureSlot)
     _pictureLoadResult = {};
     _pictureLoadResult.TextureSlot = textureSlot;
 
-    _loadingThread = std::move(std::thread([path, this] {
+    _loadingThread = std::move(std::thread{[path, this] {
         std::lock_guard<std::mutex> imageLoadingLockGuard{_imageLoadingMutex};
+
         std::cout << "Thread running, loading " << path << "\n";
         _pictureLoadResult.Path = path;
         stbi_set_flip_vertically_on_load(true);
@@ -81,13 +82,12 @@ void Picture::Load(std::string path, int textureSlot)
         auto scaledDimentions = _resolutionScaleCalculator->ScaleToFit(DeviceInformation::getWidth(), DeviceInformation::getHeight(), _pictureLoadResult.Width, _pictureLoadResult.Height);
         _pictureLoadResult.VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(DeviceInformation::getWidth(), DeviceInformation::getHeight(), scaledDimentions.first, scaledDimentions.second);
         _pictureLoadingState = PictureLoadingState::SEND_TO_GPU;
-    }));
+    }});
     std::cout << "----------------------> LOAD END\n";
 }
 
 void Picture::Render()
 {
-    std::lock_guard<std::mutex> imageLoadingLockGuard{_imageLoadingMutex};
     if (_pictureLoadingState == PictureLoadingState::SEND_TO_GPU)
     {
         SendToGpu();
@@ -100,6 +100,7 @@ void Picture::Render()
 
 void Picture::SendToGpu()
 {
+
     auto start = std::chrono::steady_clock::now();
     std::cout << "SEND_TO_GPU:" << _pictureLoadResult.Path << "\n";
     GL_CALL(glActiveTexture(GL_TEXTURE0 + _pictureLoadResult.TextureSlot));
@@ -109,7 +110,10 @@ void Picture::SendToGpu()
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
     GL_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
-    GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, _pictureLoadResult.Width, _pictureLoadResult.Height, 0, GL_RGB, GL_UNSIGNED_BYTE, _pictureLoadResult.LoadedImage));
+    {
+        std::lock_guard<std::mutex> imageLoadingLockGuard{_imageLoadingMutex};
+        GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, _pictureLoadResult.Width, _pictureLoadResult.Height, 0, GL_RGB, GL_UNSIGNED_BYTE, _pictureLoadResult.LoadedImage));
+    }
     _pictureLoadResult.FreeImage();
 
     _vertexArray.reset();

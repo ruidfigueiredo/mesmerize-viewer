@@ -43,7 +43,7 @@ std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
     struct dirent *dp;
     while ((dp = readdir(dirp)) != nullptr)
     {
-        if (dp->d_type == DT_REG && endsWith(dp->d_name, "jpg"))
+        if (dp->d_type == DT_REG && endsWith(dp->d_name, "JPG"))
             results.push_back(pathToFolder + "/" + dp->d_name);
     }
     closedir(dirp);
@@ -52,7 +52,8 @@ std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
 
 int main(void)
 {
-    auto results = GetFilePathsInFolder("/home/rdfi/Pictures");
+    //auto results = GetFilePathsInFolder("/home/rdfi/Pictures");
+    auto results = GetFilePathsInFolder("/media/rdfi/EvoNtfs/ToSaveAndMaybeNotToSave (copy)");
     for (auto filePath : results)
     {
         std::cout << filePath << std::endl;
@@ -68,7 +69,7 @@ int main(void)
     int deviceHeight = vidMode->height;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(2872 /*0.8 * deviceWidth*/, 1728 /*0.8 * deviceHeight*/, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(0.8 * deviceWidth, 0.8 * deviceHeight, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -83,7 +84,7 @@ int main(void)
 
     GLenum err = glewInit();
 
-    DeviceInformation::init(window, 2872 /*0.8 * deviceWidth*/, 1728 /*0.8 * deviceHeight*/);
+    DeviceInformation::init(window, 0.8 * deviceWidth, 0.8 * deviceHeight);
     // std::cout << "-------------------------------------\n";
     // std::cout << "DeviceInformation::getDeviceWidth()" << DeviceInformation::getDeviceWidth() << "\n";
     // std::cout << "DeviceInformation::getDeviceHeight()" << DeviceInformation::getDeviceHeight() << "\n";
