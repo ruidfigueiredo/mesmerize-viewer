@@ -3,7 +3,7 @@
 
 EaseInOut::EaseInOut(double durationInSeconds): TimingFunction(durationInSeconds) {}
 
-double EaseInOut::ComputeTimingFunctionValue(double ellapsedTimeInSeconds)
+double EaseInOut::ComputeTimingFunctionValue(double ellapsedTimeInMilliseconds)
 {
-    return std::sin((M_PI/2)*ellapsedTimeInSeconds/_durationInSeconds);
+    return std::sin((M_PI/2)*ellapsedTimeInMilliseconds/_durationInMilliseconds);
 }

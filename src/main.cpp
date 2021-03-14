@@ -54,7 +54,7 @@ std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
 
 int main(void)
 {
-    EaseInOut easeInOutTimingFunction {5};
+    EaseInOut easeInOutTimingFunction {15000};
     TimingFunction& timingFunctoin = easeInOutTimingFunction;
     
     auto results = GetFilePathsInFolder("/home/rdfi/Pictures/Croatia");
@@ -166,10 +166,10 @@ int main(void)
         }
 
         program.SetUniformf("blendValue", blendValue);
-        glm::mat4 projection = glm::ortho(0.0f, 1.0f * DeviceInformation::getWidth(), 0.0f, 1.0f * DeviceInformation::getHeight(), -1.0f, 1.0f);
-
-        glm::mat4 view{1.0f};
-        glm::mat4 model = glm::translate(glm::mat4{1.0f}, glm::vec3{-50.0f + 100*timingFunctoin.GetValue(), 0.0f, 0.0f});
+        glm::mat4 projection = glm::ortho(50.0f, 1.0f * DeviceInformation::getWidth()-50.0f, 0.0f, 1.0f * DeviceInformation::getHeight(), -1.0f, 1.0f);
+        
+        glm::mat4 model = glm::scale(glm::mat4{1.0f}, glm::vec3{1.0f+0.01*timingFunctoin.GetValue(), 1.0f+0.01*timingFunctoin.GetValue(), 1.0f});
+        glm::mat4 view = glm::translate(model, glm::vec3{50*timingFunctoin.GetValue(), 0.0f, 0.0f});
         program.SetUniformMat4f("mvp", projection * view * model);
 
         program.Bind();

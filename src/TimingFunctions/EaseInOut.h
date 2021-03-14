@@ -3,7 +3,7 @@
 
 class EaseInOut : public TimingFunction 
 {        
-    double ComputeTimingFunctionValue(double ellapsedTimeInSeconds);    
+    double ComputeTimingFunctionValue(double ellapsedTimeInMilliseconds);    
     public: 
-    EaseInOut(double durationInSeconds);
+    EaseInOut(double durationInMilliseconds);
 };
