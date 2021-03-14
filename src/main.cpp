@@ -23,6 +23,8 @@
 #include "Picture.h"
 #include "ResolutionScaleCalculator.h"
 #include "CheckGlErrors.h"
+#include "TimingFunctions/TimingFunction.h"
+#include "TimingFunctions/EaseInOut.h"
 
 #include <vector>
 #include <sys/types.h>
@@ -52,8 +54,11 @@ std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
 
 int main(void)
 {
-    //auto results = GetFilePathsInFolder("/home/rdfi/Pictures");
-    auto results = GetFilePathsInFolder("/media/rdfi/EvoNtfs/ToSaveAndMaybeNotToSave (copy)");
+    EaseInOut easeInOutTimingFunction {5};
+    TimingFunction& timingFunctoin = easeInOutTimingFunction;
+    
+    auto results = GetFilePathsInFolder("/home/rdfi/Pictures/Croatia");
+    //auto results = GetFilePathsInFolder("/media/rdfi/EvoNtfs/ToSaveAndMaybeNotToSave (copy)");
     for (auto filePath : results)
     {
         std::cout << filePath << std::endl;
@@ -164,7 +169,7 @@ int main(void)
         glm::mat4 projection = glm::ortho(0.0f, 1.0f * DeviceInformation::getWidth(), 0.0f, 1.0f * DeviceInformation::getHeight(), -1.0f, 1.0f);
 
         glm::mat4 view{1.0f};
-        glm::mat4 model{1.0f};
+        glm::mat4 model = glm::translate(glm::mat4{1.0f}, glm::vec3{-50.0f + 100*timingFunctoin.GetValue(), 0.0f, 0.0f});
         program.SetUniformMat4f("mvp", projection * view * model);
 
         program.Bind();
