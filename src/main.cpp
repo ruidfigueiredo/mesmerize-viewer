@@ -8,9 +8,11 @@
 #include <stb/stb_image_resize.h>
 #include <iir_gauss_blur.h>
 #include <glm/glm.hpp>
+#ifdef ENABLE_IMGUI
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
+#endif
 #include <glm/gtc/matrix_transform.hpp>
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
@@ -83,10 +85,11 @@ int main(void)
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+#ifdef ENABLE_IMGUI
     GL_CALL(ImGui::CreateContext());
     GL_CALL(ImGui_ImplGlfw_InitForOpenGL(window, true));
     GL_CALL(ImGui_ImplOpenGL3_Init("#version 300 es"));
-
+#endif 
     GLenum err = glewInit();
 
     DeviceInformation::init(window, 0.8 * deviceWidth, 0.8 * deviceHeight);
@@ -121,7 +124,7 @@ int main(void)
     auto resolutionScaleCalculator = std::make_shared<ResolutionScaleCalculator>();
     auto imagePositionCalculator = std::make_shared<ImagePositionCalculator>();
     Picture picture1{resolutionScaleCalculator, imagePositionCalculator};
-    picture1.Load("/home/rdfi/Pictures/Moon.jpg", 0);
+    picture1.Load("/home/rdfi/Pictures/Croatia/peixe mau.jpg", 0);
     Picture picture2{resolutionScaleCalculator, imagePositionCalculator};
     picture2.Load("/home/rdfi/Pictures/IMG_20201103_133626.jpg", 1);
 
@@ -130,13 +133,14 @@ int main(void)
     Renderer renderer;
     /* Loop until the user closes the window */
     int selectedTextureSlot = 0;
-    float blendValue = 0.0f;
+    float blendValue = 1.0f;
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         renderer.Clear();
         //glClear(GL_COLOR_BUFFER_BIT);
 
+#ifdef ENABLE_IMGUI
         // Start the Dear ImGui frame
         GL_CALL(ImGui_ImplOpenGL3_NewFrame());
         GL_CALL(ImGui_ImplGlfw_NewFrame());
@@ -164,6 +168,7 @@ int main(void)
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();
         }
+#endif
 
         program.SetUniformf("blendValue", blendValue);
         glm::mat4 projection = glm::ortho(50.0f, 1.0f * DeviceInformation::getWidth()-50.0f, 0.0f, 1.0f * DeviceInformation::getHeight(), -1.0f, 1.0f);
@@ -179,9 +184,10 @@ int main(void)
         program.SetUniformi("textureSlot", 0);
         program.SetUniformf("blendValue", blendValue);
         picture1.Render();
-
+#ifdef ENABLE_IMGUI
         GL_CALL(ImGui::Render());
         GL_CALL(ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()));
+#endif
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
@@ -189,10 +195,11 @@ int main(void)
         glfwPollEvents();
     }
 
-    //glDeleteProgram(programId);
+#ifdef ENABLE_IMGUI    
     GL_CALL(ImGui_ImplGlfw_Shutdown());
     GL_CALL(ImGui_ImplOpenGL3_Shutdown());
     GL_CALL(ImGui::DestroyContext());
+#endif
     glfwTerminate();
     return 0;
 }

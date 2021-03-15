@@ -1,5 +1,4 @@
 #include "TimingFunction.h"
-#include <iostream>
 
 std::chrono::_V2::system_clock::time_point TimingFunction::_startTime = std::chrono::high_resolution_clock::now();
 
@@ -11,5 +10,5 @@ double TimingFunction::GetValue() {
     auto ellapsedDuration = now - _startTime;
     auto ellapsedDurationInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(ellapsedDuration);
     
-    return   ComputeTimingFunctionValue(ellapsedDurationInMilliseconds.count());
+    return ComputeTimingFunctionValue(ellapsedDurationInMilliseconds.count());
 }
