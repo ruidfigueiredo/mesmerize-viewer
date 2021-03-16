@@ -56,11 +56,11 @@ std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
 
 int main(void)
 {
-    EaseInOut easeInOutTimingFunction {15000};
-    TimingFunction& timingFunctoin = easeInOutTimingFunction;
-    
-    auto results = GetFilePathsInFolder("/home/rdfi/Pictures/Croatia");
-    //auto results = GetFilePathsInFolder("/media/rdfi/EvoNtfs/ToSaveAndMaybeNotToSave (copy)");
+    EaseInOut easeInOutTimingFunction{15000};
+    TimingFunction &timingFunctoin = easeInOutTimingFunction;
+
+    //auto results = GetFilePathsInFolder("/home/rdfi/Pictures");
+    auto results = GetFilePathsInFolder("/media/rdfi/EvoNtfs/ToSaveAndMaybeNotToSave (copy)");
     for (auto filePath : results)
     {
         std::cout << filePath << std::endl;
@@ -89,16 +89,10 @@ int main(void)
     GL_CALL(ImGui::CreateContext());
     GL_CALL(ImGui_ImplGlfw_InitForOpenGL(window, true));
     GL_CALL(ImGui_ImplOpenGL3_Init("#version 300 es"));
-#endif 
+#endif
     GLenum err = glewInit();
 
     DeviceInformation::init(window, 0.8 * deviceWidth, 0.8 * deviceHeight);
-    // std::cout << "-------------------------------------\n";
-    // std::cout << "DeviceInformation::getDeviceWidth()" << DeviceInformation::getDeviceWidth() << "\n";
-    // std::cout << "DeviceInformation::getDeviceHeight()" << DeviceInformation::getDeviceHeight() << "\n";
-    // std::cout << "DeviceInformation::getMaxTextureSize()" << DeviceInformation::getMaxTextureSize() << "\n";
-    // std::cout << "-------------------------------------\n";
-    // return 0;
 
     if (GLEW_OK != err)
     {
@@ -124,9 +118,9 @@ int main(void)
     auto resolutionScaleCalculator = std::make_shared<ResolutionScaleCalculator>();
     auto imagePositionCalculator = std::make_shared<ImagePositionCalculator>();
     Picture picture1{resolutionScaleCalculator, imagePositionCalculator};
-    picture1.Load("/home/rdfi/Pictures/Croatia/peixe mau.jpg", 0);
+    picture1.Load("/home/rdfi/Pictures/Lagos.jpg", 0);
     Picture picture2{resolutionScaleCalculator, imagePositionCalculator};
-    picture2.Load("/home/rdfi/Pictures/IMG_20201103_133626.jpg", 1);
+    picture2.Load("/home/rdfi/Pictures/Lagos.jpg", 1, PictureSize::ZOOM, PictureLoadingMode::GAUSSIAN_BLUR);
 
     glfwSwapInterval(1);
 
@@ -154,13 +148,17 @@ int main(void)
 
             if (ImGui::Button("<"))
             { // Buttons return true when clicked (most widgets return true when edited/activated)
-                picture1.Load(results[--counter], 0);
+                int index = --counter % results.size();
+                picture1.Load(results[index], 0);
+                picture2.Load(results[index], 1, PictureSize::ZOOM, PictureLoadingMode::GAUSSIAN_BLUR);
             }
 
             ImGui::SameLine();
             if (ImGui::Button(">"))
             { // Buttons return true when clicked (most widgets return true when edited/activated)
-                picture1.Load(results[++counter], 0);
+                int index = ++counter % results.size();
+                picture1.Load(results[index], 0);
+                picture2.Load(results[index], 1, PictureSize::ZOOM, PictureLoadingMode::GAUSSIAN_BLUR);
             }
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
@@ -171,18 +169,20 @@ int main(void)
 #endif
 
         program.SetUniformf("blendValue", blendValue);
-        glm::mat4 projection = glm::ortho(50.0f, 1.0f * DeviceInformation::getWidth()-50.0f, 0.0f, 1.0f * DeviceInformation::getHeight(), -1.0f, 1.0f);
-        
-        glm::mat4 model = glm::scale(glm::mat4{1.0f}, glm::vec3{1.0f+0.01*timingFunctoin.GetValue(), 1.0f+0.01*timingFunctoin.GetValue(), 1.0f});
-        glm::mat4 view = glm::translate(model, glm::vec3{50*timingFunctoin.GetValue(), 0.0f, 0.0f});
+        glm::mat4 projection = glm::ortho(0.0f, 1.0f * DeviceInformation::getWidth(), 0.0f, 1.0f * DeviceInformation::getHeight(), -1.0f, 1.0f);
+
+        glm::mat4 model = glm::scale(glm::mat4{1.0f}, glm::vec3{1.0f + 0.0f * timingFunctoin.GetValue(), 1.0f + 0.0f * timingFunctoin.GetValue(), 1.0f});
+        glm::mat4 view = glm::translate(model, glm::vec3{50 * timingFunctoin.GetValue(), 0.0f, 0.0f});
         program.SetUniformMat4f("mvp", projection * view * model);
 
         program.Bind();
         // program.SetUniformi("textureSlot", 1);
         // program.SetUniformf("blendValue", 1.0f);
         // picture2.Render();
-        program.SetUniformi("textureSlot", 0);
+        program.SetUniformi("textureSlot", 1);
         program.SetUniformf("blendValue", blendValue);
+        picture2.Render();
+        program.SetUniformi("textureSlot", 0);
         picture1.Render();
 #ifdef ENABLE_IMGUI
         GL_CALL(ImGui::Render());
@@ -195,7 +195,7 @@ int main(void)
         glfwPollEvents();
     }
 
-#ifdef ENABLE_IMGUI    
+#ifdef ENABLE_IMGUI
     GL_CALL(ImGui_ImplGlfw_Shutdown());
     GL_CALL(ImGui_ImplOpenGL3_Shutdown());
     GL_CALL(ImGui::DestroyContext());

@@ -8,11 +8,25 @@
 #include <functional>
 #include <mutex>
 
-enum PictureLoadingState
+enum class PictureLoadingState
 {
     EMPTY,
     SEND_TO_GPU,
     LOADED
+};
+
+enum class PictureSize
+{
+    SCALE_TO_FIT,
+    COVER,
+    //ZOOM is COVER + scale 50%
+    ZOOM
+};
+
+enum class PictureLoadingMode
+{
+    NORMAL,
+    GAUSSIAN_BLUR
 };
 
 struct PictureLoadResult
@@ -39,7 +53,6 @@ class Picture
     PictureLoadingState _pictureLoadingState;
     PictureLoadResult _pictureLoadResult;
     std::thread _loadingThread;
-    int _activeTextureSlot;
     std::mutex _imageLoadingMutex;
 
     void SendToGpu();
@@ -48,6 +61,6 @@ class Picture
 public:
     Picture(std::shared_ptr<ResolutionScaleCalculator> rsc, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator);
     ~Picture();
-    void Load(std::string pathToFile, int textureSlot);
+    void Load(std::string pathToFile, int textureSlot, PictureSize size = PictureSize::SCALE_TO_FIT, PictureLoadingMode pictureLoadingMode = PictureLoadingMode::NORMAL);
     void Render();
 };

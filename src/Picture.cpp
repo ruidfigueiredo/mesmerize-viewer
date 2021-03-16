@@ -2,6 +2,7 @@
 #include "GL/glew.h"
 #include <stb/stb_image.h>
 #include <stb/stb_image_resize.h>
+#include <iir_gauss_blur.h>
 #include <iostream>
 #include "ImagePositionCalculator.h"
 #include "CheckGlErrors.h"
@@ -12,7 +13,6 @@
 
 Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator) : _resolutionScaleCalculator(rcs),
                                                                                                                                      _pictureLoadingState(PictureLoadingState::EMPTY),
-                                                                                                                                     _activeTextureSlot(0),
                                                                                                                                      _imagePositionCalculator(imagePositionCalculator)
 {
     unsigned int textureIds[2];
@@ -29,23 +29,23 @@ Picture::~Picture()
     }
 }
 
-void Picture::Load(std::string path, int textureSlot)
+void Picture::Load(std::string path, int textureSlot, PictureSize pictureSize, PictureLoadingMode pictureLoadingMode)
 {
-    std::cout << "----------------------> LOAD START: " << path << " \n";
+    std::cout << "Loading new picture: " << path << " \n";
     if (_loadingThread.joinable())
     {
-        std::cout << "\t\tCALLING JOIN, EXPECTING THAT THE THREAD WILL BLOCK!!!\n";
+        std::cout << "\t\tAnother picture was loading, waiting for it to finish\n";
         _loadingThread.join(); //this will block the rendering thread but should only happen if the image takes so long to load that there's a new one to replace it that will need to wait for the first to finish
-        std::cout << "\t\t\tJOINED!!!\n";
+        std::cout << "\t\tContinuing loading: " << path << "\n";
     }
 
     _pictureLoadResult = {};
     _pictureLoadResult.TextureSlot = textureSlot;
 
-    _loadingThread = std::move(std::thread{[path, this] {
+    _loadingThread = std::move(std::thread{[pictureSize, pictureLoadingMode, path, this] {
         std::lock_guard<std::mutex> imageLoadingLockGuard{_imageLoadingMutex};
 
-        std::cout << "Thread running, loading " << path << "\n";
+        std::cout << "In memory picture loading thread running, loading " << path << "\n";
         _pictureLoadResult.Path = path;
         stbi_set_flip_vertically_on_load(true);
         unsigned char *loadedImage = stbi_load(path.c_str(), &_pictureLoadResult.Width, &_pictureLoadResult.Height, &_pictureLoadResult.BytesPerPixel, 3);
@@ -74,16 +74,46 @@ void Picture::Load(std::string path, int textureSlot)
         else
         {
             _pictureLoadResult.LoadedImage = loadedImage;
-            _pictureLoadResult.FreeImage = [this] {
+            _pictureLoadResult.FreeImage = [this, path] {
                 stbi_image_free(_pictureLoadResult.LoadedImage);
                 _pictureLoadResult.LoadedImage = nullptr;
+                std::cout << "Picture " << path << " memory freed\n";
             };
         }
-        auto scaledDimentions = _resolutionScaleCalculator->ScaleToFit(DeviceInformation::getWidth(), DeviceInformation::getHeight(), _pictureLoadResult.Width, _pictureLoadResult.Height);
-        _pictureLoadResult.VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(DeviceInformation::getWidth(), DeviceInformation::getHeight(), scaledDimentions.first, scaledDimentions.second);
+
+        if (pictureLoadingMode == PictureLoadingMode::GAUSSIAN_BLUR)
+        {
+            float sigma = 10.0f; //produces a nice result, see http://arkanis.de/weblog/2018-08-30-iir-gauss-blur-h-a-gaussian-blur-single-header-file-library
+            iir_gauss_blur(_pictureLoadResult.Width, _pictureLoadResult.Height, _pictureLoadResult.BytesPerPixel, _pictureLoadResult.LoadedImage, sigma);
+        }
+        else if (pictureLoadingMode != PictureLoadingMode::NORMAL)
+        {
+            throw std::range_error("Unknown value for PictureLoadingMode enum: " + std::to_string((int)pictureLoadingMode));
+        }
+
+        std::pair<int, int> finalDimensions;
+        if (pictureSize == PictureSize::COVER)
+        {
+            finalDimensions = _resolutionScaleCalculator->ScaleToCover(DeviceInformation::getWidth(), DeviceInformation::getHeight(), _pictureLoadResult.Width, _pictureLoadResult.Height);
+        }
+        else if (pictureSize == PictureSize::SCALE_TO_FIT)
+        {
+            finalDimensions = _resolutionScaleCalculator->ScaleToFit(DeviceInformation::getWidth(), DeviceInformation::getHeight(), _pictureLoadResult.Width, _pictureLoadResult.Height);
+        }
+        else if (pictureSize == PictureSize::ZOOM)
+        {
+            finalDimensions = _resolutionScaleCalculator->ScaleToFit(DeviceInformation::getWidth(), DeviceInformation::getHeight(), _pictureLoadResult.Width, _pictureLoadResult.Height);
+            finalDimensions.first *= 1.5;
+            finalDimensions.second *= 1.5;
+        }
+        else
+        {
+            throw std::range_error("Unknown value for PictureSize enum: " + std::to_string((int)pictureSize));
+        }
+        _pictureLoadResult.VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(DeviceInformation::getWidth(), DeviceInformation::getHeight(), finalDimensions.first, finalDimensions.second);
         _pictureLoadingState = PictureLoadingState::SEND_TO_GPU;
     }});
-    std::cout << "----------------------> LOAD END\n";
+    std::cout << "Picture " << path << " loaded into memory\n";
 }
 
 void Picture::Render()
