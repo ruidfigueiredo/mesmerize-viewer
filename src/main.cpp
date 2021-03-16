@@ -47,7 +47,7 @@ std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
     struct dirent *dp;
     while ((dp = readdir(dirp)) != nullptr)
     {
-        if (dp->d_type == DT_REG && endsWith(dp->d_name, "JPG"))
+        if (dp->d_type == DT_REG && endsWith(dp->d_name, "jpg"))
             results.push_back(pathToFolder + "/" + dp->d_name);
     }
     closedir(dirp);
@@ -59,8 +59,8 @@ int main(void)
     EaseInOut easeInOutTimingFunction{15000};
     TimingFunction &timingFunctoin = easeInOutTimingFunction;
 
-    //auto results = GetFilePathsInFolder("/home/rdfi/Pictures");
-    auto results = GetFilePathsInFolder("/media/rdfi/EvoNtfs/ToSaveAndMaybeNotToSave (copy)");
+    auto results = GetFilePathsInFolder("/home/rdfi/Pictures");
+    //auto results = GetFilePathsInFolder("/media/rdfi/EvoNtfs/ToSaveAndMaybeNotToSave (copy)");
     for (auto filePath : results)
     {
         std::cout << filePath << std::endl;
@@ -118,7 +118,7 @@ int main(void)
     auto resolutionScaleCalculator = std::make_shared<ResolutionScaleCalculator>();
     auto imagePositionCalculator = std::make_shared<ImagePositionCalculator>();
     Picture picture1{resolutionScaleCalculator, imagePositionCalculator};
-    picture1.Load("/home/rdfi/Pictures/Lagos.jpg", 0);
+    picture1.Load("/home/rdfi/Pictures/3c2kpp7mao041.jpg", 0, PictureSize::COVER);
     Picture picture2{resolutionScaleCalculator, imagePositionCalculator};
     picture2.Load("/home/rdfi/Pictures/Lagos.jpg", 1, PictureSize::ZOOM, PictureLoadingMode::GAUSSIAN_BLUR);
 
@@ -150,7 +150,7 @@ int main(void)
             { // Buttons return true when clicked (most widgets return true when edited/activated)
                 int index = --counter % results.size();
                 picture1.Load(results[index], 0);
-                picture2.Load(results[index], 1, PictureSize::ZOOM, PictureLoadingMode::GAUSSIAN_BLUR);
+                picture2.Load(results[index], 1, PictureSize::ZOOM);
             }
 
             ImGui::SameLine();
@@ -158,7 +158,7 @@ int main(void)
             { // Buttons return true when clicked (most widgets return true when edited/activated)
                 int index = ++counter % results.size();
                 picture1.Load(results[index], 0);
-                picture2.Load(results[index], 1, PictureSize::ZOOM, PictureLoadingMode::GAUSSIAN_BLUR);
+                picture2.Load(results[index], 1, PictureSize::ZOOM);
             }
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);

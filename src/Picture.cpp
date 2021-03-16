@@ -102,7 +102,7 @@ void Picture::Load(std::string path, int textureSlot, PictureSize pictureSize, P
         }
         else if (pictureSize == PictureSize::ZOOM)
         {
-            finalDimensions = _resolutionScaleCalculator->ScaleToFit(DeviceInformation::getWidth(), DeviceInformation::getHeight(), _pictureLoadResult.Width, _pictureLoadResult.Height);
+            finalDimensions = _resolutionScaleCalculator->ScaleToCover(DeviceInformation::getWidth(), DeviceInformation::getHeight(), _pictureLoadResult.Width, _pictureLoadResult.Height);
             finalDimensions.first *= 1.5;
             finalDimensions.second *= 1.5;
         }
