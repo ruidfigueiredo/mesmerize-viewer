@@ -4,9 +4,11 @@
 #include "ResolutionScaleCalculator.h"
 #include "VertexArray.h"
 #include "ImagePositionCalculator.h"
+#include "ShaderProgram.h"
 #include <thread>
 #include <functional>
 #include <mutex>
+#include "glm/glm.hpp"
 
 enum class PictureLoadingState
 {
@@ -44,7 +46,6 @@ struct PictureLoadResult
 class Picture
 {
     unsigned int _mainTextureId;
-    unsigned int _blurryBackgroundTextureId;
     std::shared_ptr<ResolutionScaleCalculator> _resolutionScaleCalculator;
     std::shared_ptr<ImagePositionCalculator> _imagePositionCalculator;
     std::shared_ptr<VertexArray> _vertexArray;
@@ -53,14 +54,16 @@ class Picture
     PictureLoadingState _pictureLoadingState;
     PictureLoadResult _pictureLoadResult;
     std::thread _loadingThread;
-    std::mutex _imageLoadingMutex;
+    static std::mutex ImageLoadingMutex;
+    static ShaderProgram PictureShaderProgram;
 
     void SendToGpu();
-    void RenderPicture();
+    void RenderPicture(glm::mat4 mvp, float opacity);
 
 public:
     Picture(std::shared_ptr<ResolutionScaleCalculator> rsc, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator);
     ~Picture();
+    static void InitShaders();
     void Load(std::string pathToFile, int textureSlot, PictureSize size = PictureSize::SCALE_TO_FIT, PictureLoadingMode pictureLoadingMode = PictureLoadingMode::NORMAL);
-    void Render();
+    void Render(glm::mat4 mvp, float opacity = 1.0f);
 };

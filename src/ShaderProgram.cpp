@@ -6,11 +6,17 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "CheckGlErrors.h"
 
-ShaderProgram::ShaderProgram() : _programId(glCreateProgram()){};
+ShaderProgram::ShaderProgram() : _programId(-2){};
 
 ShaderProgram::~ShaderProgram()
 {
-    GL_CALL(glDeleteProgram(_programId));
+    if (_programId != -2)
+        GL_CALL(glDeleteProgram(_programId));
+}
+
+void ShaderProgram::Init()
+{
+    _programId = glCreateProgram();
 }
 
 void ShaderProgram::Bind() const

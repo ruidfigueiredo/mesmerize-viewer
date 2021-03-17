@@ -1,12 +1,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <math.h>
 
 #include <string>
 #include <stb/stb_image.h>
-#include <stb/stb_image_resize.h>
-#include <iir_gauss_blur.h>
 #include <glm/glm.hpp>
 #ifdef ENABLE_IMGUI
 #include <imgui/imgui.h>
@@ -14,11 +11,6 @@
 #include <imgui/backends/imgui_impl_opengl3.h>
 #endif
 #include <glm/gtc/matrix_transform.hpp>
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "VertexArray.h"
-#include "VertexBufferLayout.h"
-#include "ShaderProgram.h"
 #include "Renderer.h"
 #include "DeviceInformation.h"
 
@@ -57,10 +49,9 @@ std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
 int main(void)
 {
     EaseInOut easeInOutTimingFunction{15000};
-    TimingFunction &timingFunctoin = easeInOutTimingFunction;
+    TimingFunction &timingFunction = easeInOutTimingFunction;
 
     auto results = GetFilePathsInFolder("/home/rdfi/Pictures");
-    //auto results = GetFilePathsInFolder("/media/rdfi/EvoNtfs/ToSaveAndMaybeNotToSave (copy)");
     for (auto filePath : results)
     {
         std::cout << filePath << std::endl;
@@ -90,6 +81,7 @@ int main(void)
     GL_CALL(ImGui_ImplGlfw_InitForOpenGL(window, true));
     GL_CALL(ImGui_ImplOpenGL3_Init("#version 300 es"));
 #endif
+
     GLenum err = glewInit();
 
     DeviceInformation::init(window, 0.8 * deviceWidth, 0.8 * deviceHeight);
@@ -110,17 +102,11 @@ int main(void)
     GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GL_CALL(glBlendEquation(GL_FUNC_ADD));
 
-    ShaderProgram program;
-    program.AddVertexShader("shaders/vertex.shader");
-    program.AddFragmentShader("shaders/fragment.shader");
-    program.Bind();
-
     auto resolutionScaleCalculator = std::make_shared<ResolutionScaleCalculator>();
     auto imagePositionCalculator = std::make_shared<ImagePositionCalculator>();
-    Picture picture1{resolutionScaleCalculator, imagePositionCalculator};
-    picture1.Load("/home/rdfi/Pictures/3c2kpp7mao041.jpg", 0, PictureSize::COVER);
-    Picture picture2{resolutionScaleCalculator, imagePositionCalculator};
-    picture2.Load("/home/rdfi/Pictures/Lagos.jpg", 1, PictureSize::ZOOM, PictureLoadingMode::GAUSSIAN_BLUR);
+    Picture::InitShaders();
+    Picture picture{resolutionScaleCalculator, imagePositionCalculator};
+    picture.Load("/home/rdfi/Pictures/Alex.jpg", 0, PictureSize::COVER);
 
     glfwSwapInterval(1);
 
@@ -149,16 +135,14 @@ int main(void)
             if (ImGui::Button("<"))
             { // Buttons return true when clicked (most widgets return true when edited/activated)
                 int index = --counter % results.size();
-                picture1.Load(results[index], 0);
-                picture2.Load(results[index], 1, PictureSize::ZOOM);
+                picture.Load(results[index], 0, PictureSize::COVER);
             }
 
             ImGui::SameLine();
             if (ImGui::Button(">"))
             { // Buttons return true when clicked (most widgets return true when edited/activated)
                 int index = ++counter % results.size();
-                picture1.Load(results[index], 0);
-                picture2.Load(results[index], 1, PictureSize::ZOOM);
+                picture.Load(results[index], 0, PictureSize::COVER);
             }
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
@@ -168,22 +152,12 @@ int main(void)
         }
 #endif
 
-        program.SetUniformf("blendValue", blendValue);
+
         glm::mat4 projection = glm::ortho(0.0f, 1.0f * DeviceInformation::getWidth(), 0.0f, 1.0f * DeviceInformation::getHeight(), -1.0f, 1.0f);
+        glm::mat4 model = glm::scale(glm::mat4{1.0f}, glm::vec3{1.0f + 0.0f * timingFunction.GetValue(), 1.0f + 0.0f * timingFunction.GetValue(), 1.0f});
+        glm::mat4 view = glm::translate(model, glm::vec3{50 * timingFunction.GetValue(), 0.0f, 0.0f});
 
-        glm::mat4 model = glm::scale(glm::mat4{1.0f}, glm::vec3{1.0f + 0.0f * timingFunctoin.GetValue(), 1.0f + 0.0f * timingFunctoin.GetValue(), 1.0f});
-        glm::mat4 view = glm::translate(model, glm::vec3{50 * timingFunctoin.GetValue(), 0.0f, 0.0f});
-        program.SetUniformMat4f("mvp", projection * view * model);
-
-        program.Bind();
-        // program.SetUniformi("textureSlot", 1);
-        // program.SetUniformf("blendValue", 1.0f);
-        // picture2.Render();
-        program.SetUniformi("textureSlot", 1);
-        program.SetUniformf("blendValue", blendValue);
-        picture2.Render();
-        program.SetUniformi("textureSlot", 0);
-        picture1.Render();
+        picture.Render(projection * view * model);
 #ifdef ENABLE_IMGUI
         GL_CALL(ImGui::Render());
         GL_CALL(ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()));

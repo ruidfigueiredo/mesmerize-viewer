@@ -11,14 +11,21 @@
 #include "VertexBuffer.h"
 #include "DeviceInformation.h"
 
+//statics
+std::mutex Picture::ImageLoadingMutex;
+ShaderProgram Picture::PictureShaderProgram;
+void Picture::InitShaders()
+{
+    PictureShaderProgram.Init();
+    PictureShaderProgram.AddVertexShader("shaders/vertex.shader");
+    PictureShaderProgram.AddFragmentShader("shaders/fragment.shader");
+}
+
 Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator) : _resolutionScaleCalculator(rcs),
                                                                                                                                      _pictureLoadingState(PictureLoadingState::EMPTY),
                                                                                                                                      _imagePositionCalculator(imagePositionCalculator)
 {
-    unsigned int textureIds[2];
-    GL_CALL(glGenTextures(2, textureIds));
-    _mainTextureId = textureIds[0];
-    _blurryBackgroundTextureId = textureIds[1];
+    GL_CALL(glGenTextures(1, &_mainTextureId));
 }
 
 Picture::~Picture()
@@ -43,7 +50,7 @@ void Picture::Load(std::string path, int textureSlot, PictureSize pictureSize, P
     _pictureLoadResult.TextureSlot = textureSlot;
 
     _loadingThread = std::move(std::thread{[pictureSize, pictureLoadingMode, path, this] {
-        std::lock_guard<std::mutex> imageLoadingLockGuard{_imageLoadingMutex};
+        std::lock_guard<std::mutex> imageLoadingLockGuard{ImageLoadingMutex};
 
         std::cout << "In memory picture loading thread running, loading " << path << "\n";
         _pictureLoadResult.Path = path;
@@ -116,7 +123,7 @@ void Picture::Load(std::string path, int textureSlot, PictureSize pictureSize, P
     std::cout << "Picture " << path << " loaded into memory\n";
 }
 
-void Picture::Render()
+void Picture::Render(glm::mat4 mvp, float opacity)
 {
     if (_pictureLoadingState == PictureLoadingState::SEND_TO_GPU)
     {
@@ -124,13 +131,12 @@ void Picture::Render()
     }
     else if (_pictureLoadingState == PictureLoadingState::LOADED)
     {
-        RenderPicture();
+        RenderPicture(mvp, opacity);
     }
 }
 
 void Picture::SendToGpu()
 {
-
     auto start = std::chrono::steady_clock::now();
     std::cout << "SEND_TO_GPU:" << _pictureLoadResult.Path << "\n";
     GL_CALL(glActiveTexture(GL_TEXTURE0 + _pictureLoadResult.TextureSlot));
@@ -141,7 +147,7 @@ void Picture::SendToGpu()
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
     GL_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
     {
-        std::lock_guard<std::mutex> imageLoadingLockGuard{_imageLoadingMutex};
+        std::lock_guard<std::mutex> imageLoadingLockGuard{ImageLoadingMutex};
         GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, _pictureLoadResult.Width, _pictureLoadResult.Height, 0, GL_RGB, GL_UNSIGNED_BYTE, _pictureLoadResult.LoadedImage));
     }
     _pictureLoadResult.FreeImage();
@@ -171,12 +177,18 @@ void Picture::SendToGpu()
               << " ms" << std::endl;
 }
 
-void Picture::RenderPicture()
+void Picture::RenderPicture(glm::mat4 mvp, float opacity)
 {
+    PictureShaderProgram.Bind();
+    PictureShaderProgram.SetUniformf("blendValue", opacity);
+    PictureShaderProgram.SetUniformMat4f("mvp", mvp);
+    PictureShaderProgram.SetUniformi("textureSlot", _pictureLoadResult.TextureSlot);
+
     GL_CALL(glActiveTexture(GL_TEXTURE0 + _pictureLoadResult.TextureSlot));
     GL_CALL(glBindTexture(GL_TEXTURE_2D, _mainTextureId));
     _vertexArray->Bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     _vertexArray->Unbind();
     glBindTexture(GL_TEXTURE_2D, 0);
+    PictureShaderProgram.Unbind();
 }

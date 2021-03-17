@@ -12,6 +12,7 @@ private:
 public:
     ShaderProgram();
     ~ShaderProgram();
+    void Init();
     void AddVertexShader(const std::string &pathToShader) const;
     void AddFragmentShader(const std::string &pathToShader) const;
     void SetUniformi(const std::string &name, const int &v1);
