@@ -9,6 +9,8 @@
 #include <functional>
 #include <mutex>
 #include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "DeviceInformation.h"
 
 enum class PictureLoadingState
 {
@@ -31,8 +33,7 @@ enum class PictureLoadingMode
     GAUSSIAN_BLUR
 };
 
-struct PictureLoadResult
-{
+struct PictureLoadResult {
     int TextureSlot;
     int Width;
     int Height;
@@ -65,5 +66,5 @@ public:
     ~Picture();
     static void InitShaders();
     void Load(std::string pathToFile, int textureSlot, PictureSize size = PictureSize::SCALE_TO_FIT, PictureLoadingMode pictureLoadingMode = PictureLoadingMode::NORMAL);
-    void Render(glm::mat4 mvp, float opacity = 1.0f);
+    void Render(glm::mat4 mvp = glm::ortho(0.0f, (float)DeviceInformation::getWidth(), 0.0f, (float)DeviceInformation::getHeight(), -1.0f, 1.0f), float opacity = 1.0f);
 };

@@ -34,9 +34,9 @@ int DeviceInformation::getHeight()
     return _height;
 }
 
-void DeviceInformation::updateDimentions(GLFWwindow *window, int newWidth, int newHeight)
+void DeviceInformation::updateDimensions(GLFWwindow *, int newWidth, int newHeight)
 {
-    std::cout << "Window dimentions changed to " << newWidth << "x" << newHeight << "\n";
+    std::cout << "Window dimensions changed to " << newWidth << "x" << newHeight << "\n";
     _width = newWidth;
     _height = newHeight;
     glViewport(0, 0, newWidth, newHeight);
@@ -53,7 +53,7 @@ void DeviceInformation::init(GLFWwindow *window, int width, int height)
 {
     _width = width;
     _height = height;
-    GL_CALL(glfwSetWindowSizeCallback(window, updateDimentions));
+    GL_CALL(glfwSetWindowSizeCallback(window, updateDimensions));
     GL_CALL(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_maxTextureSize));
     const GLFWvidmode *vidmode;
     GL_CALL(vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor()));

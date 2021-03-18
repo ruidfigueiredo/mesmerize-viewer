@@ -46,44 +46,44 @@ void Picture::Load(std::string path, int textureSlot, PictureSize pictureSize, P
         std::cout << "\t\tContinuing loading: " << path << "\n";
     }
 
-    _pictureLoadResult = {};
-    _pictureLoadResult.TextureSlot = textureSlot;
 
-    _loadingThread = std::move(std::thread{[pictureSize, pictureLoadingMode, path, this] {
+
+    _loadingThread = std::move(std::thread{[textureSlot, pictureSize, pictureLoadingMode, path, this] {
         std::lock_guard<std::mutex> imageLoadingLockGuard{ImageLoadingMutex};
+        PictureLoadResult newPictureLoadResult = {};
+        newPictureLoadResult.TextureSlot = textureSlot;
 
         std::cout << "In memory picture loading thread running, loading " << path << "\n";
-        _pictureLoadResult.Path = path;
+        newPictureLoadResult.Path = path;
         stbi_set_flip_vertically_on_load(true);
-        unsigned char *loadedImage = stbi_load(path.c_str(), &_pictureLoadResult.Width, &_pictureLoadResult.Height, &_pictureLoadResult.BytesPerPixel, 3);
+        unsigned char *loadedImage = stbi_load(path.c_str(), &newPictureLoadResult.Width, &newPictureLoadResult.Height, &newPictureLoadResult.BytesPerPixel, 3);
         if (loadedImage == nullptr)
         {
             std::cout << "Failed to load image in path: " << path << std::endl;
             return;
         }
-        if (_resolutionScaleCalculator->IsScallingRequired(_pictureLoadResult.Width, _pictureLoadResult.Height, DeviceInformation::getMaxTextureSize()))
+        if (_resolutionScaleCalculator->IsScallingRequired(newPictureLoadResult.Width, newPictureLoadResult.Height, DeviceInformation::getMaxTextureSize()))
         {
-            std::cout << "Scaling is required (" << _pictureLoadResult.Width << " x " << _pictureLoadResult.Height << ")\n";
-            auto scaledDimensions = _resolutionScaleCalculator->ScaleToMaxDimension(_pictureLoadResult.Width, _pictureLoadResult.Height, DeviceInformation::getMaxTextureSize());
+            std::cout << "Scaling is required (" << newPictureLoadResult.Width << " x " << newPictureLoadResult.Height << ")\n";
+            auto scaledDimensions = _resolutionScaleCalculator->ScaleToMaxDimension(newPictureLoadResult.Width, newPictureLoadResult.Height, DeviceInformation::getMaxTextureSize());
             int newWidth = scaledDimensions.first;
             int newHeight = scaledDimensions.second;
-            unsigned char *output_pixels = (unsigned char *)malloc(newWidth * newHeight * _pictureLoadResult.BytesPerPixel);
-            stbir_resize_uint8(loadedImage, _pictureLoadResult.Width, _pictureLoadResult.Height, 0, output_pixels, newWidth, newHeight, 0, _pictureLoadResult.BytesPerPixel);
+            unsigned char *output_pixels = (unsigned char *)malloc(newWidth * newHeight * newPictureLoadResult.BytesPerPixel);
+            stbir_resize_uint8(loadedImage, newPictureLoadResult.Width, newPictureLoadResult.Height, 0, output_pixels, newWidth, newHeight, 0, newPictureLoadResult.BytesPerPixel);
             stbi_image_free(loadedImage);
-            _pictureLoadResult.LoadedImage = output_pixels;
-            _pictureLoadResult.Width = newWidth;
-            _pictureLoadResult.Height = newHeight;
-            _pictureLoadResult.FreeImage = [this] {
-                delete _pictureLoadResult.LoadedImage;
-                _pictureLoadResult.LoadedImage = nullptr;
+            newPictureLoadResult.LoadedImage = output_pixels;
+            newPictureLoadResult.Width = newWidth;
+            newPictureLoadResult.Height = newHeight;
+            newPictureLoadResult.FreeImage = [output_pixels, path] {
+                delete output_pixels;
+                std::cout << "Resized picture " << path << " memory freed\n";
             };
         }
         else
         {
-            _pictureLoadResult.LoadedImage = loadedImage;
-            _pictureLoadResult.FreeImage = [this, path] {
-                stbi_image_free(_pictureLoadResult.LoadedImage);
-                _pictureLoadResult.LoadedImage = nullptr;
+            newPictureLoadResult.LoadedImage = loadedImage;
+            newPictureLoadResult.FreeImage = [loadedImage, path] {
+                stbi_image_free(loadedImage);
                 std::cout << "Picture " << path << " memory freed\n";
             };
         }
@@ -91,7 +91,7 @@ void Picture::Load(std::string path, int textureSlot, PictureSize pictureSize, P
         if (pictureLoadingMode == PictureLoadingMode::GAUSSIAN_BLUR)
         {
             float sigma = 10.0f; //produces a nice result, see http://arkanis.de/weblog/2018-08-30-iir-gauss-blur-h-a-gaussian-blur-single-header-file-library
-            iir_gauss_blur(_pictureLoadResult.Width, _pictureLoadResult.Height, _pictureLoadResult.BytesPerPixel, _pictureLoadResult.LoadedImage, sigma);
+            iir_gauss_blur(newPictureLoadResult.Width, newPictureLoadResult.Height, newPictureLoadResult.BytesPerPixel, newPictureLoadResult.LoadedImage, sigma);
         }
         else if (pictureLoadingMode != PictureLoadingMode::NORMAL)
         {
@@ -101,15 +101,15 @@ void Picture::Load(std::string path, int textureSlot, PictureSize pictureSize, P
         std::pair<int, int> finalDimensions;
         if (pictureSize == PictureSize::COVER)
         {
-            finalDimensions = _resolutionScaleCalculator->ScaleToCover(DeviceInformation::getWidth(), DeviceInformation::getHeight(), _pictureLoadResult.Width, _pictureLoadResult.Height);
+            finalDimensions = _resolutionScaleCalculator->ScaleToCover(DeviceInformation::getWidth(), DeviceInformation::getHeight(), newPictureLoadResult.Width, newPictureLoadResult.Height);
         }
         else if (pictureSize == PictureSize::SCALE_TO_FIT)
         {
-            finalDimensions = _resolutionScaleCalculator->ScaleToFit(DeviceInformation::getWidth(), DeviceInformation::getHeight(), _pictureLoadResult.Width, _pictureLoadResult.Height);
+            finalDimensions = _resolutionScaleCalculator->ScaleToFit(DeviceInformation::getWidth(), DeviceInformation::getHeight(), newPictureLoadResult.Width, newPictureLoadResult.Height);
         }
         else if (pictureSize == PictureSize::ZOOM)
         {
-            finalDimensions = _resolutionScaleCalculator->ScaleToCover(DeviceInformation::getWidth(), DeviceInformation::getHeight(), _pictureLoadResult.Width, _pictureLoadResult.Height);
+            finalDimensions = _resolutionScaleCalculator->ScaleToCover(DeviceInformation::getWidth(), DeviceInformation::getHeight(), newPictureLoadResult.Width, newPictureLoadResult.Height);
             finalDimensions.first *= 1.5;
             finalDimensions.second *= 1.5;
         }
@@ -117,11 +117,13 @@ void Picture::Load(std::string path, int textureSlot, PictureSize pictureSize, P
         {
             throw std::range_error("Unknown value for PictureSize enum: " + std::to_string((int)pictureSize));
         }
-        _pictureLoadResult.VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(DeviceInformation::getWidth(), DeviceInformation::getHeight(), finalDimensions.first, finalDimensions.second);
+        newPictureLoadResult.VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(DeviceInformation::getWidth(), DeviceInformation::getHeight(), finalDimensions.first, finalDimensions.second);
+        _pictureLoadResult = newPictureLoadResult;
         _pictureLoadingState = PictureLoadingState::SEND_TO_GPU;
     }});
     std::cout << "Picture " << path << " loaded into memory\n";
 }
+
 
 void Picture::Render(glm::mat4 mvp, float opacity)
 {
@@ -149,8 +151,9 @@ void Picture::SendToGpu()
     {
         std::lock_guard<std::mutex> imageLoadingLockGuard{ImageLoadingMutex};
         GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, _pictureLoadResult.Width, _pictureLoadResult.Height, 0, GL_RGB, GL_UNSIGNED_BYTE, _pictureLoadResult.LoadedImage));
+        _pictureLoadResult.FreeImage();
+        _pictureLoadResult.LoadedImage = nullptr; //this needs revisiting, possible solution is to store _pictureLoadResult and use share_ptr
     }
-    _pictureLoadResult.FreeImage();
 
     _vertexArray.reset();
     _vertexBuffer.reset();
@@ -192,3 +195,4 @@ void Picture::RenderPicture(glm::mat4 mvp, float opacity)
     glBindTexture(GL_TEXTURE_2D, 0);
     PictureShaderProgram.Unbind();
 }
+

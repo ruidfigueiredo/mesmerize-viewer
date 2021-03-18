@@ -67,7 +67,7 @@ int main(void)
     int deviceHeight = vidMode->height;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(0.8 * deviceWidth, 0.8 * deviceHeight, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(0.8 * deviceWidth, 0.8 * deviceHeight, "Mesmerize", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -106,7 +106,11 @@ int main(void)
     auto imagePositionCalculator = std::make_shared<ImagePositionCalculator>();
     Picture::InitShaders();
     Picture picture{resolutionScaleCalculator, imagePositionCalculator};
-    picture.Load("/home/rdfi/Pictures/Alex.jpg", 0, PictureSize::COVER);
+    picture.Load("/home/rdfi/Pictures/IMG_1076.JPG", 0, PictureSize::COVER);
+
+    Picture backPicture{resolutionScaleCalculator, imagePositionCalculator};
+    backPicture.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 1, PictureSize::COVER);
+
 
     glfwSwapInterval(1);
 
@@ -152,12 +156,16 @@ int main(void)
         }
 #endif
 
-
         glm::mat4 projection = glm::ortho(0.0f, 1.0f * DeviceInformation::getWidth(), 0.0f, 1.0f * DeviceInformation::getHeight(), -1.0f, 1.0f);
         glm::mat4 model = glm::scale(glm::mat4{1.0f}, glm::vec3{1.0f + 0.0f * timingFunction.GetValue(), 1.0f + 0.0f * timingFunction.GetValue(), 1.0f});
         glm::mat4 view = glm::translate(model, glm::vec3{50 * timingFunction.GetValue(), 0.0f, 0.0f});
 
-        picture.Render(projection * view * model);
+#ifdef ENABLE_IMGUI
+        backPicture.Render(projection);
+        picture.Render(projection, blendValue);
+#else
+        picture.Render();
+#endif
 #ifdef ENABLE_IMGUI
         GL_CALL(ImGui::Render());
         GL_CALL(ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()));

@@ -16,7 +16,7 @@ class DeviceInformation{
     static int getWidth();
     static int getHeight();
 
-    static void updateDimentions(GLFWwindow*, int newWidth, int newHeight);
+    static void updateDimensions(GLFWwindow*, int newWidth, int newHeight);
 
     static int getMaxTextureSize();
 

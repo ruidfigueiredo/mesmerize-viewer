@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13.4)
-project(MesmerizeClient)
+project(MesmerizeViewer)
 add_subdirectory(vendor)
 set(ProjectFiles 
     "src/IndexBuffer.cpp"
@@ -28,7 +28,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_NAME run)
 
 file(COPY example.jpg DESTINATION ${CMAKE_BINARY_DIR})
 
-add_custom_command(TARGET MesmerizeClient PRE_BUILD
+add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/src/shaders ${CMAKE_BINARY_DIR}/shaders)
 
