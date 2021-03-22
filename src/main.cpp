@@ -5,6 +5,7 @@
 #include <string>
 #include <stb/stb_image.h>
 #include <glm/glm.hpp>
+#define ENABLE_IMGUI 1
 #ifdef ENABLE_IMGUI
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>

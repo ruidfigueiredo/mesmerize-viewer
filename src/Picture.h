@@ -11,6 +11,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "DeviceInformation.h"
+#include <functional>
 
 enum class PictureLoadingState
 {
@@ -40,8 +41,15 @@ struct PictureLoadResult {
     int BytesPerPixel;
     unsigned char *LoadedImage;
     std::array<float, 16> VertexCoordinates;
-    std::function<void()> FreeImage;
+    std::function<void()> FreeImage = nullptr;
     std::string Path;
+
+    virtual ~PictureLoadResult() {
+        if (FreeImage != nullptr) {
+            std::cout << "Freeing memory for image" << Path << std::endl;
+            FreeImage();
+        }
+    }
 };
 
 class Picture
@@ -53,7 +61,7 @@ class Picture
     std::shared_ptr<VertexBuffer> _vertexBuffer;
     std::shared_ptr<IndexBuffer> _indexBuffer;
     PictureLoadingState _pictureLoadingState;
-    PictureLoadResult _pictureLoadResult;
+    std::shared_ptr<PictureLoadResult> _pictureLoadResult;
     std::thread _loadingThread;
     static std::mutex ImageLoadingMutex;
     static ShaderProgram PictureShaderProgram;
@@ -65,6 +73,6 @@ public:
     Picture(std::shared_ptr<ResolutionScaleCalculator> rsc, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator);
     ~Picture();
     static void InitShaders();
-    void Load(std::string pathToFile, int textureSlot, PictureSize size = PictureSize::SCALE_TO_FIT, PictureLoadingMode pictureLoadingMode = PictureLoadingMode::NORMAL);
+    void Load(std::string pathToFile, int textureSlot, PictureSize size = PictureSize::SCALE_TO_FIT, PictureLoadingMode pictureLoadingMode = PictureLoadingMode::NORMAL, const std::function<void(bool)>& onLoaded = nullptr);
     void Render(glm::mat4 mvp = glm::ortho(0.0f, (float)DeviceInformation::getWidth(), 0.0f, (float)DeviceInformation::getHeight(), -1.0f, 1.0f), float opacity = 1.0f);
 };
