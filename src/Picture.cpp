@@ -44,7 +44,6 @@ void Picture::HandleSizeChanged(int newWidth, int newHeight)
 {
     if (_pictureLoadResult == nullptr) return;
 
-    std::shared_ptr<PictureLoadResult> pictureLoadResult;
     {
         std::lock_guard<std::mutex> imageLoadingLockGuard{ImageLoadingMutex};
         auto finalDimensions = _resolutionScaleCalculator->ScaleToCover(newWidth, newHeight, _pictureLoadResult->Width, _pictureLoadResult->Height);
