@@ -26,16 +26,44 @@ Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs, std::shared_ptr
                                                                                                                                      _imagePositionCalculator(imagePositionCalculator)
 {
     GL_CALL(glGenTextures(1, &_mainTextureId));
-    DeviceInformation::registerSizeChangedCallback([](int width, int height){
-        std::cout << "Picture: (newWidth: " << width << ", newHeight: " << height << ")\n";
-    });
+    DeviceInformation::registerSizeChangedCallback([this](int width, int height){
+        HandleSizeChanged(width, height);
+    }, this);
 }
 
 Picture::~Picture()
 {
+    DeviceInformation::unRegisterSizeChangedCallback(this);
     if (_loadingThread.joinable())
     {
         _loadingThread.join(); //let it finish if it needs to
+    }
+}
+
+void Picture::HandleSizeChanged(int newWidth, int newHeight)
+{
+    if (_pictureLoadResult == nullptr) return;
+
+    std::shared_ptr<PictureLoadResult> pictureLoadResult;
+    {
+        std::lock_guard<std::mutex> imageLoadingLockGuard{ImageLoadingMutex};
+        auto finalDimensions = _resolutionScaleCalculator->ScaleToCover(newWidth, newHeight, _pictureLoadResult->Width, _pictureLoadResult->Height);
+        _pictureLoadResult->VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(newWidth, newHeight, finalDimensions.first, finalDimensions.second);
+
+        _vertexArray.reset();
+        _vertexBuffer.reset();
+        _indexBuffer.reset();
+        _vertexArray = std::make_shared<VertexArray>();
+        _vertexBuffer = std::make_shared<VertexBuffer>(&_pictureLoadResult->VertexCoordinates, sizeof(_pictureLoadResult->VertexCoordinates));
+        VertexBufferLayout twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout;
+        twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout.Push<float>(2);
+        twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout.Push<float>(2);
+        _vertexArray->AddBuffer(*_vertexBuffer, twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout);
+        uint indexes[] = {
+                0, 1, 2,
+                2, 3, 0};
+        _indexBuffer = std::make_shared<IndexBuffer>(indexes, 6);
+        _vertexArray->AddBuffer(*_indexBuffer);
     }
 }
 

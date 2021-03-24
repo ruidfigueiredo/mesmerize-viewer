@@ -3,18 +3,18 @@ project(MesmerizeViewer)
 add_subdirectory(vendor)
 set(ProjectFiles
         "src/IndexBuffer.cpp"
-    "src/Renderer.cpp"
-    "src/VertexArray.cpp"
-    "src/VertexBufferLayout.cpp"
-    "src/ShaderProgram.cpp"
-    "src/VertexBuffer.cpp"
-    "src/ImagePositionCalculator.cpp"
-    "src/ResolutionScaleCalculator.cpp"
-    "src/Picture.cpp"
-    "src/DeviceInformation.cpp"
-    "src/TimingFunctions/TimingFunction.cpp"
-    "src/TimingFunctions/EaseInOut.cpp"
-    "src/main.cpp")
+        "src/Renderer.cpp"
+        "src/VertexArray.cpp"
+        "src/VertexBufferLayout.cpp"
+        "src/ShaderProgram.cpp"
+        "src/VertexBuffer.cpp"
+        "src/ImagePositionCalculator.cpp"
+        "src/ResolutionScaleCalculator.cpp"
+        "src/Picture.cpp"
+        "src/DeviceInformation.cpp"
+        "src/TimingFunctions/TimingFunction.cpp"
+        "src/TimingFunctions/EaseInOut.cpp"
+        "src/main.cpp")
 add_executable(${PROJECT_NAME} ${ProjectFiles})
 
 set(IncludeDirectories 

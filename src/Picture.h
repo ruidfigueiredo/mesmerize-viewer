@@ -68,6 +68,7 @@ class Picture
 
     void SendToGpu();
     void RenderPicture(glm::mat4 mvp, float opacity);
+    void HandleSizeChanged(int newWidth, int newHeight);
 
 public:
     Picture(std::shared_ptr<ResolutionScaleCalculator> rsc, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator);
