@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "CallbackRegistry.h"
 
 #include <string>
 #include <stb/stb_image.h>
@@ -22,7 +23,6 @@
 #include "TimingFunctions/EaseInOut.h"
 
 #include <vector>
-#include <sys/types.h>
 #include <dirent.h>
 
 bool endsWith(std::string str, std::string ending)

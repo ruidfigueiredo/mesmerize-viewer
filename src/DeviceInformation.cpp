@@ -5,6 +5,7 @@ int DeviceInformation::_height = -1;
 int DeviceInformation::_deviceWidth = -1;
 int DeviceInformation::_deviceHeight = -1;
 int DeviceInformation::_maxTextureSize = -1;
+CallbackRegistry<std::function<void(int, int)>> DeviceInformation::_sizeChangedCallbackRegistry;
 
 int DeviceInformation::getDeviceWidth()
 {
@@ -40,6 +41,7 @@ void DeviceInformation::updateDimensions(GLFWwindow *, int newWidth, int newHeig
     _width = newWidth;
     _height = newHeight;
     glViewport(0, 0, newWidth, newHeight);
+    _sizeChangedCallbackRegistry.invokeCallbacks(newWidth, newHeight);
 }
 
 int DeviceInformation::getMaxTextureSize()
@@ -59,4 +61,13 @@ void DeviceInformation::init(GLFWwindow *window, int width, int height)
     GL_CALL(vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor()));
     _deviceWidth = vidmode->width;
     _deviceHeight = vidmode->height;
+}
+
+
+void DeviceInformation::registerSizeChangedCallback(std::function<void(int, int)>&& callback, void *owner){
+    _sizeChangedCallbackRegistry.registerCallback(std::forward<std::function<void(int, int)>>(callback), owner);
+}
+
+void DeviceInformation::unRegisterSizeChangedCallback(void *owner) {
+    _sizeChangedCallbackRegistry.unregisterCallbacksFor(owner);
 }

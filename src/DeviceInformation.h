@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 #include "CheckGlErrors.h"
 #include <iostream>
+#include "CallbackRegistry.h"
+#include <functional>
 
 class DeviceInformation{
     static int _deviceWidth;
@@ -10,6 +12,8 @@ class DeviceInformation{
     static int _width;
     static int _height;
     static int _maxTextureSize;
+    static CallbackRegistry<std::function<void(int, int)>> _sizeChangedCallbackRegistry;
+
     public:
     static int getDeviceWidth();
     static int getDeviceHeight();
@@ -21,4 +25,7 @@ class DeviceInformation{
     static int getMaxTextureSize();
 
     static void init(GLFWwindow* window, int width, int height);
+
+    static void registerSizeChangedCallback(std::function<void(int, int)>&& callback, void *owner = nullptr);
+    static void unRegisterSizeChangedCallback(void *owner);
 };

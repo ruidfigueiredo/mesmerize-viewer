@@ -26,6 +26,9 @@ Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs, std::shared_ptr
                                                                                                                                      _imagePositionCalculator(imagePositionCalculator)
 {
     GL_CALL(glGenTextures(1, &_mainTextureId));
+    DeviceInformation::registerSizeChangedCallback([](int width, int height){
+        std::cout << "Picture: (newWidth: " << width << ", newHeight: " << height << ")\n";
+    });
 }
 
 Picture::~Picture()
