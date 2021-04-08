@@ -46,7 +46,7 @@ void Picture::HandleSizeChanged(int newWidth, int newHeight)
 
     {
         std::lock_guard<std::mutex> imageLoadingLockGuard{ImageLoadingMutex};
-        auto finalDimensions = _resolutionScaleCalculator->ScaleToCover(newWidth, newHeight, _pictureLoadResult->Width, _pictureLoadResult->Height);
+        auto finalDimensions = _resolutionScaleCalculator->ScaleToFit(newWidth, newHeight, _pictureLoadResult->Width, _pictureLoadResult->Height);
         _pictureLoadResult->VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(newWidth, newHeight, finalDimensions.first, finalDimensions.second);
 
         _vertexArray.reset();
