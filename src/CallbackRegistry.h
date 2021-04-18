@@ -39,6 +39,7 @@ template<typename T>
 template<typename... Args>
 void CallbackRegistry<T>::invokeCallbacks(Args &&...args) {
     for(const auto & callbackInfo : _callbacks){
+        //see https://stackoverflow.com/questions/7257144/when-to-use-stdforward-to-forward-arguments
         callbackInfo.callback(std::forward<Args>(args)...);
     }
 }
