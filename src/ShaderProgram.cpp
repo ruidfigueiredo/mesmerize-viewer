@@ -87,7 +87,7 @@ void ShaderProgram::SetUniformMat4f(const std::string &name, const glm::mat4 &pr
 void ShaderProgram::LoadAndLinkShader(unsigned int type, const std::string &pathToFile) const
 {
     const std::string &shaderSourceCode = GetTextFileContents(pathToFile);
-    unsigned int shaderId = CreateShader(_programId, type, shaderSourceCode.c_str());
+    unsigned int shaderId = CreateShader(type, shaderSourceCode.c_str());
     GL_CALL(glAttachShader(_programId, shaderId));
     GL_CALL(glLinkProgram(_programId));
     GL_CALL(glValidateProgram(_programId));
@@ -109,7 +109,7 @@ const std::string ShaderProgram::GetTextFileContents(const std::string &filePath
     return ss.str();
 }
 
-const unsigned int ShaderProgram::CreateShader(unsigned int programId, unsigned int type, const char *source) const
+const unsigned int ShaderProgram::CreateShader(unsigned int type, const char *source) const
 {
     const unsigned int shaderId = glCreateShader(type);
     GL_CALL(glShaderSource(shaderId, 1, &source, nullptr));
@@ -121,12 +121,12 @@ const unsigned int ShaderProgram::CreateShader(unsigned int programId, unsigned 
     {
         int logLength;
         GL_CALL(glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength));
-        char *errorMessage = new char[logLength];
+        char errorMessage[logLength];
         GL_CALL(glGetShaderInfoLog(shaderId, logLength, &logLength, errorMessage));
         std::cout << "Error compiling shader: " << std::endl;
         std::cout << "type: " << (type == GL_VERTEX_SHADER ? "Vertex shader" : "Fragment shader") << std::endl;
         std::cout << errorMessage;
-        delete[] errorMessage;
+        throw std::string(errorMessage);
     }
 
     return shaderId;

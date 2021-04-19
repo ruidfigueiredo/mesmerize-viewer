@@ -24,7 +24,7 @@ public:
 
 private:
     const std::string GetTextFileContents(const std::string &filePath) const;
-    const unsigned int CreateShader(unsigned int programId, unsigned int type, const char *source) const;
+    const unsigned int CreateShader(unsigned int type, const char *source) const;
     void LoadAndLinkShader(unsigned int type, const std::string &filePath) const;
     int GetLocation(const std::string &name);
 };

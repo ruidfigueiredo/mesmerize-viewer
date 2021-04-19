@@ -106,10 +106,10 @@ int main(void)
     auto imagePositionCalculator = std::make_shared<ImagePositionCalculator>();
     Picture::InitShaders();
     Picture picture{resolutionScaleCalculator, imagePositionCalculator};
-    picture.Load("/home/rdfi/Pictures/IMG_1076.JPG", 0, PictureSize::COVER);
+    picture.Load("/home/rdfi/Pictures/IMG_1076.JPG", 0, PictureScaleMode::COVER);
 
     Picture backPicture{resolutionScaleCalculator, imagePositionCalculator};
-    backPicture.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 1, PictureSize::COVER);
+    backPicture.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 1, PictureScaleMode::COVER);
 
 
     glfwSwapInterval(1);
@@ -139,14 +139,14 @@ int main(void)
             if (ImGui::Button("<"))
             { // Buttons return true when clicked (most widgets return true when edited/activated)
                 int index = --counter % results.size();
-                picture.Load(results[index], 0, PictureSize::COVER);
+                picture.Load(results[index], 0, PictureScaleMode::COVER);
             }
 
             ImGui::SameLine();
             if (ImGui::Button(">"))
             { // Buttons return true when clicked (most widgets return true when edited/activated)
                 int index = ++counter % results.size();
-                picture.Load(results[index], 0, PictureSize::COVER);
+                picture.Load(results[index], 0, PictureScaleMode::COVER);
             }
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);

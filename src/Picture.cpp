@@ -46,27 +46,38 @@ void Picture::HandleSizeChanged(int newWidth, int newHeight)
 
     {
         std::lock_guard<std::mutex> imageLoadingLockGuard{ImageLoadingMutex};
-        auto finalDimensions = _resolutionScaleCalculator->ScaleToFit(newWidth, newHeight, _pictureLoadResult->Width, _pictureLoadResult->Height);
+
+        auto finalDimensions = CalculateScaledDimensions(_pictureLoadResult->pictureScaleMode, newWidth, newHeight, _pictureLoadResult->Width, _pictureLoadResult->Height);
         _pictureLoadResult->VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(newWidth, newHeight, finalDimensions.first, finalDimensions.second);
 
-        _vertexArray.reset();
-        _vertexBuffer.reset();
-        _indexBuffer.reset();
-        _vertexArray = std::make_shared<VertexArray>();
-        _vertexBuffer = std::make_shared<VertexBuffer>(&_pictureLoadResult->VertexCoordinates, sizeof(_pictureLoadResult->VertexCoordinates));
-        VertexBufferLayout twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout;
-        twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout.Push<float>(2);
-        twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout.Push<float>(2);
-        _vertexArray->AddBuffer(*_vertexBuffer, twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout);
-        uint indexes[] = {
-                0, 1, 2,
-                2, 3, 0};
-        _indexBuffer = std::make_shared<IndexBuffer>(indexes, 6);
-        _vertexArray->AddBuffer(*_indexBuffer);
+        SetupVertexArray(_pictureLoadResult->VertexCoordinates);
     }
 }
 
-void Picture::Load(std::string path, int textureSlot, PictureSize pictureSize, PictureLoadingMode pictureLoadingMode, const std::function<void(bool)>& onLoaded)
+std::pair<int, int> Picture::CalculateScaledDimensions(PictureScaleMode pictureScaleMode, int deviceWidth, int deviceHeight, int width, int height)
+{
+    std::pair<int, int> finalDimensions;
+    if (pictureScaleMode == PictureScaleMode::COVER)
+    {
+        finalDimensions = _resolutionScaleCalculator->ScaleToCover(deviceWidth, deviceHeight, width, height);
+    }
+    else if (pictureScaleMode == PictureScaleMode::SCALE_TO_FIT)
+    {
+        finalDimensions = _resolutionScaleCalculator->ScaleToFit(deviceWidth, deviceHeight, width, height);
+    }
+    else if (pictureScaleMode == PictureScaleMode::ZOOM)
+    {
+        finalDimensions = _resolutionScaleCalculator->ScaleToCover(deviceWidth, deviceHeight, width, height);
+        finalDimensions.first *= 1.5;
+        finalDimensions.second *= 1.5;
+    }
+    else {
+        throw std::range_error("Unknown value for PictureScaleMode enum: " + std::to_string((int) pictureScaleMode));
+    }
+    return finalDimensions;
+}
+
+void Picture::Load(std::string path, int textureSlot, PictureScaleMode pictureScaleMode, PictureEffects pictureLoadingMode, const std::function<void(bool)>& onLoaded)
 {
     std::cout << "Loading new picture: " << path << " \n";
     if (_loadingThread.joinable())
@@ -77,10 +88,11 @@ void Picture::Load(std::string path, int textureSlot, PictureSize pictureSize, P
     }
 
 
-    _loadingThread = std::move(std::thread{[textureSlot, pictureSize, pictureLoadingMode, path, this] {
+    _loadingThread = std::move(std::thread{[textureSlot, pictureScaleMode, pictureLoadingMode, path, this] {
         std::lock_guard<std::mutex> imageLoadingLockGuard{ImageLoadingMutex};
         auto newPictureLoadResult = std::make_shared<PictureLoadResult>();
         newPictureLoadResult->TextureSlot = textureSlot;
+        newPictureLoadResult->pictureScaleMode = pictureScaleMode;
 
         std::cout << "In memory picture loading thread running, loading " << path << "\n";
         newPictureLoadResult->Path = path;
@@ -117,35 +129,19 @@ void Picture::Load(std::string path, int textureSlot, PictureSize pictureSize, P
             };
         }
 
-        if (pictureLoadingMode == PictureLoadingMode::GAUSSIAN_BLUR)
+        if (pictureLoadingMode == PictureEffects::GAUSSIAN_BLUR)
         {
             float sigma = 10.0f; //produces a nice result, see http://arkanis.de/weblog/2018-08-30-iir-gauss-blur-h-a-gaussian-blur-single-header-file-library
             iir_gauss_blur(newPictureLoadResult->Width, newPictureLoadResult->Height, newPictureLoadResult->BytesPerPixel, newPictureLoadResult->LoadedImage, sigma);
         }
-        else if (pictureLoadingMode != PictureLoadingMode::NORMAL)
+        else if (pictureLoadingMode != PictureEffects::NONE)
         {
-            throw std::range_error("Unknown value for PictureLoadingMode enum: " + std::to_string((int)pictureLoadingMode));
+            throw std::range_error("Unknown value for PictureEffects enum: " + std::to_string((int)pictureLoadingMode));
         }
 
-        std::pair<int, int> finalDimensions;
-        if (pictureSize == PictureSize::COVER)
-        {
-            finalDimensions = _resolutionScaleCalculator->ScaleToCover(DeviceInformation::getWidth(), DeviceInformation::getHeight(), newPictureLoadResult->Width, newPictureLoadResult->Height);
-        }
-        else if (pictureSize == PictureSize::SCALE_TO_FIT)
-        {
-            finalDimensions = _resolutionScaleCalculator->ScaleToFit(DeviceInformation::getWidth(), DeviceInformation::getHeight(), newPictureLoadResult->Width, newPictureLoadResult->Height);
-        }
-        else if (pictureSize == PictureSize::ZOOM)
-        {
-            finalDimensions = _resolutionScaleCalculator->ScaleToCover(DeviceInformation::getWidth(), DeviceInformation::getHeight(), newPictureLoadResult->Width, newPictureLoadResult->Height);
-            finalDimensions.first *= 1.5;
-            finalDimensions.second *= 1.5;
-        }
-        else
-        {
-            throw std::range_error("Unknown value for PictureSize enum: " + std::to_string((int)pictureSize));
-        }
+        std::pair<int, int> finalDimensions = CalculateScaledDimensions(pictureScaleMode, DeviceInformation::getWidth(), DeviceInformation::getHeight(), newPictureLoadResult->Width,
+                                                                        newPictureLoadResult->Height);
+
         newPictureLoadResult->VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(DeviceInformation::getWidth(), DeviceInformation::getHeight(), finalDimensions.first, finalDimensions.second);
         _pictureLoadResult = newPictureLoadResult;
         _pictureLoadingState = PictureLoadingState::SEND_TO_GPU;
@@ -164,6 +160,22 @@ void Picture::Render(glm::mat4 mvp, float opacity)
     {
         RenderPicture(mvp, opacity);
     }
+}
+void Picture::SetupVertexArray(const std::array<float, 16> & squareCoordinatesWithTextureCoordinates) {
+    _vertexArray.reset();
+    _vertexBuffer.reset();
+    _indexBuffer.reset();
+    _vertexArray = std::make_unique<VertexArray>();
+    _vertexBuffer = std::make_unique<VertexBuffer>(&squareCoordinatesWithTextureCoordinates, sizeof(squareCoordinatesWithTextureCoordinates));
+    VertexBufferLayout twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout;
+    twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout.Push<float>(2);
+    twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout.Push<float>(2);
+    _vertexArray->AddBuffer(*_vertexBuffer, twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout);
+    uint indexes[] = {
+            0, 1, 2,
+            2, 3, 0};
+    _indexBuffer = std::make_unique<IndexBuffer>(indexes, 6);
+    _vertexArray->AddBuffer(*_indexBuffer);
 }
 
 void Picture::SendToGpu()
@@ -185,20 +197,7 @@ void Picture::SendToGpu()
     GL_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
     GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, pictureLoadResult->Width, pictureLoadResult->Height, 0, GL_RGB, GL_UNSIGNED_BYTE, pictureLoadResult->LoadedImage));
 
-    _vertexArray.reset();
-    _vertexBuffer.reset();
-    _indexBuffer.reset();
-    _vertexArray = std::make_shared<VertexArray>();
-    _vertexBuffer = std::make_shared<VertexBuffer>(&_pictureLoadResult->VertexCoordinates, sizeof(_pictureLoadResult->VertexCoordinates));
-    VertexBufferLayout twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout;
-    twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout.Push<float>(2);
-    twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout.Push<float>(2);
-    _vertexArray->AddBuffer(*_vertexBuffer, twoFloatVertexCoordAndTwoFloatTextureCoordBufferLayout);
-    uint indexes[] = {
-        0, 1, 2,
-        2, 3, 0};
-    _indexBuffer = std::make_shared<IndexBuffer>(indexes, 6);
-    _vertexArray->AddBuffer(*_indexBuffer);
+    SetupVertexArray(pictureLoadResult->VertexCoordinates);
 
     _pictureLoadingState = PictureLoadingState::LOADED;
     std::cout << "LOADED!\n";

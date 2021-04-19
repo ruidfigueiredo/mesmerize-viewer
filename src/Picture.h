@@ -20,7 +20,7 @@ enum class PictureLoadingState
     LOADED
 };
 
-enum class PictureSize
+enum class PictureScaleMode
 {
     SCALE_TO_FIT,
     COVER,
@@ -28,9 +28,9 @@ enum class PictureSize
     ZOOM
 };
 
-enum class PictureLoadingMode
+enum class PictureEffects
 {
-    NORMAL,
+    NONE,
     GAUSSIAN_BLUR
 };
 
@@ -41,6 +41,7 @@ struct PictureLoadResult {
     int BytesPerPixel;
     unsigned char *LoadedImage;
     std::array<float, 16> VertexCoordinates;
+    PictureScaleMode pictureScaleMode;
     std::function<void()> FreeImage = nullptr;
     std::string Path;
 
@@ -57,15 +58,17 @@ class Picture
     unsigned int _mainTextureId;
     std::shared_ptr<ResolutionScaleCalculator> _resolutionScaleCalculator;
     std::shared_ptr<ImagePositionCalculator> _imagePositionCalculator;
-    std::shared_ptr<VertexArray> _vertexArray;
-    std::shared_ptr<VertexBuffer> _vertexBuffer;
-    std::shared_ptr<IndexBuffer> _indexBuffer;
+    std::unique_ptr<VertexArray> _vertexArray;
+    std::unique_ptr<VertexBuffer> _vertexBuffer;
+    std::unique_ptr<IndexBuffer> _indexBuffer;
     PictureLoadingState _pictureLoadingState;
     std::shared_ptr<PictureLoadResult> _pictureLoadResult;
     std::thread _loadingThread;
     static std::mutex ImageLoadingMutex;
     static ShaderProgram PictureShaderProgram;
 
+    void SetupVertexArray(const std::array<float, 16> & squareCoordinatesWithTextureCoordinates);
+    std::pair<int, int> CalculateScaledDimensions(PictureScaleMode pictureScaleMode, int deviceWidth, int deviceHeight, int width, int height);
     void SendToGpu();
     void RenderPicture(glm::mat4 mvp, float opacity);
     void HandleSizeChanged(int newWidth, int newHeight);
@@ -74,6 +77,6 @@ public:
     Picture(std::shared_ptr<ResolutionScaleCalculator> rsc, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator);
     ~Picture();
     static void InitShaders();
-    void Load(std::string pathToFile, int textureSlot, PictureSize size = PictureSize::SCALE_TO_FIT, PictureLoadingMode pictureLoadingMode = PictureLoadingMode::NORMAL, const std::function<void(bool)>& onLoaded = nullptr);
+    void Load(std::string pathToFile, int textureSlot, PictureScaleMode pictureScaleMode = PictureScaleMode::SCALE_TO_FIT, PictureEffects pictureLoadingMode = PictureEffects::NONE, const std::function<void(bool)>& onLoaded = nullptr);
     void Render(glm::mat4 mvp = glm::ortho(0.0f, (float)DeviceInformation::getWidth(), 0.0f, (float)DeviceInformation::getHeight(), -1.0f, 1.0f), float opacity = 1.0f);
 };
