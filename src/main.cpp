@@ -6,6 +6,9 @@
 #include <stb/stb_image.h>
 #include <glm/glm.hpp>
 #define ENABLE_IMGUI 1
+
+class directory_entry;
+
 #ifdef ENABLE_IMGUI
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
@@ -22,27 +25,38 @@
 #include "TimingFunctions/EaseInOut.h"
 
 #include <vector>
-#include <dirent.h>
+#include <filesystem>
+#include <locale>
 
-bool endsWith(std::string str, std::string ending)
+std::string toLowerCase(const std::string& str){
+    std::string lowerCaseString = str;
+    std::transform(str.begin(), str.end(), lowerCaseString.begin(), [](unsigned char c) {
+        return tolower(c);//from locale
+    });
+    return lowerCaseString;
+}
+
+bool isImageFile(const std::string& str)
 {
-    if (str.length() < ending.length())
-        return false;
-    auto res = str.substr(str.length() - ending.length());
-    return (res == ending);
+    std::string imagePath = toLowerCase(str);
+
+    static const std::vector<std::string> supportedImageExtensions = {".jpg", ".png"};
+    for(const auto& supportedExtension : supportedImageExtensions) {
+        if (toLowerCase(str).find(supportedExtension) == str.size() - supportedExtension.size()){
+            return true;
+        }
+    }
+    return false;
 }
 
 std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
 {
     std::vector<std::string> results;
-    DIR *dirp = opendir(pathToFolder.c_str());
-    struct dirent *dp;
-    while ((dp = readdir(dirp)) != nullptr)
-    {
-        if (dp->d_type == DT_REG && endsWith(dp->d_name, "jpg"))
-            results.push_back(pathToFolder + "/" + dp->d_name);
+    for(const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(pathToFolder)) {
+        if (!entry.is_directory() && isImageFile(entry.path())) {
+            results.push_back(entry.path());
+        }
     }
-    closedir(dirp);
     return results;
 }
 
