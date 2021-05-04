@@ -31,6 +31,18 @@ Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs, std::shared_ptr
     }, this);
 }
 
+Picture::Picture(Picture &&rhs) :
+    _mainTextureId(std::move(rhs._mainTextureId)),
+    _resolutionScaleCalculator(std::move(rhs._resolutionScaleCalculator)),
+    _imagePositionCalculator(std::move(rhs._imagePositionCalculator)),
+    _vertexArray(std::move(rhs._vertexArray)),
+    _vertexBuffer(std::move(rhs._vertexBuffer)),
+    _indexBuffer(std::move(rhs._indexBuffer)),
+    _pictureLoadingState(std::move(rhs._pictureLoadingState)),
+    _pictureLoadResult(std::move(rhs._pictureLoadResult)),
+    _loadingThread(std::move(rhs._loadingThread))
+    {}
+
 Picture::~Picture()
 {
     DeviceInformation::unRegisterSizeChangedCallback(this);
@@ -77,7 +89,7 @@ std::pair<int, int> Picture::CalculateScaledDimensions(PictureScaleMode pictureS
     return finalDimensions;
 }
 
-void Picture::Load(std::string path, int textureSlot, PictureScaleMode pictureScaleMode, PictureEffects pictureLoadingMode, const std::function<void(bool)>& onLoaded)
+void Picture::Load(std::string path, int textureSlot, PictureScaleMode pictureScaleMode, PictureEffects pictureLoadingMode, const std::function<void()> onLoaded)
 {
     std::cout << "Loading new picture: " << path << " \n";
     if (_loadingThread.joinable())
@@ -88,7 +100,7 @@ void Picture::Load(std::string path, int textureSlot, PictureScaleMode pictureSc
     }
 
 
-    _loadingThread = std::move(std::thread{[textureSlot, pictureScaleMode, pictureLoadingMode, path, this] {
+    _loadingThread = std::move(std::thread{[textureSlot, pictureScaleMode, pictureLoadingMode, path, this, onLoaded] {
         std::lock_guard<std::mutex> imageLoadingLockGuard{ImageLoadingMutex};
         auto newPictureLoadResult = std::make_shared<PictureLoadResult>();
         newPictureLoadResult->TextureSlot = textureSlot;
@@ -145,8 +157,12 @@ void Picture::Load(std::string path, int textureSlot, PictureScaleMode pictureSc
         newPictureLoadResult->VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(DeviceInformation::getWidth(), DeviceInformation::getHeight(), finalDimensions.first, finalDimensions.second);
         _pictureLoadResult = newPictureLoadResult;
         _pictureLoadingState = PictureLoadingState::SEND_TO_GPU;
+        std::cout << "Picture " << path << " loaded into memory\n";
+        if (onLoaded){
+            std::cout << "Calling on loaded\n";
+            onLoaded();
+        }
     }});
-    std::cout << "Picture " << path << " loaded into memory\n";
 }
 
 

@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.13.4)
 project(MesmerizeViewer)
-set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(vendor)
 set(ProjectFiles
         "src/IndexBuffer.cpp"
@@ -15,6 +14,7 @@ set(ProjectFiles
         "src/DeviceInformation.cpp"
         "src/TimingFunctions/TimingFunction.cpp"
         "src/TimingFunctions/EaseInOut.cpp"
+        "src/PictureRendererWithTransition.cpp"
         "src/main.cpp")
 add_executable(${PROJECT_NAME} ${ProjectFiles})
 
@@ -23,7 +23,7 @@ set(IncludeDirectories
     "vendor/glew-2.1.0/include"
     )
 target_include_directories(${PROJECT_NAME} PRIVATE ${IncludeDirectories})
-target_link_libraries(${PROJECT_NAME} glfw glew glm imgui iir_gauss stb stdc++fs)
+target_link_libraries(${PROJECT_NAME} glfw glew glm imgui iir_gauss stb)
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_NAME run)
 
 file(COPY example.jpg DESTINATION ${CMAKE_BINARY_DIR})

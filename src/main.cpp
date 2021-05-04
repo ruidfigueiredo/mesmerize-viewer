@@ -7,8 +7,6 @@
 #include <glm/glm.hpp>
 #define ENABLE_IMGUI 1
 
-class directory_entry;
-
 #ifdef ENABLE_IMGUI
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
@@ -25,13 +23,16 @@ class directory_entry;
 #include "TimingFunctions/EaseInOut.h"
 
 #include <vector>
-#include <filesystem>
-#include <locale>
+#include <dirent.h>
+#include <algorithm>
+
+#include "PictureRendererWithTransition.h"
+
 
 std::string toLowerCase(const std::string& str){
     std::string lowerCaseString = str;
     std::transform(str.begin(), str.end(), lowerCaseString.begin(), [](unsigned char c) {
-        return tolower(c);//from locale
+        return tolower(c);
     });
     return lowerCaseString;
 }
@@ -52,11 +53,14 @@ bool isImageFile(const std::string& str)
 std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
 {
     std::vector<std::string> results;
-    for(const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(pathToFolder)) {
-        if (!entry.is_directory() && isImageFile(entry.path())) {
-            results.push_back(entry.path());
+    DIR* dirp = opendir(pathToFolder.c_str());
+    struct dirent* directoryEntry;
+    while((directoryEntry = readdir(dirp))) {
+        if (directoryEntry->d_type == DT_REG && isImageFile(std::string{directoryEntry->d_name})) {
+            results.push_back(pathToFolder + "/" + std::string{directoryEntry->d_name});
         }
     }
+    closedir(dirp);
     return results;
 }
 

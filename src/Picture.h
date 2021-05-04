@@ -75,8 +75,9 @@ class Picture
 
 public:
     Picture(std::shared_ptr<ResolutionScaleCalculator> rsc, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator);
+    Picture(Picture&& rhs);
     ~Picture();
     static void InitShaders();
-    void Load(std::string pathToFile, int textureSlot, PictureScaleMode pictureScaleMode = PictureScaleMode::SCALE_TO_FIT, PictureEffects pictureLoadingMode = PictureEffects::NONE, const std::function<void(bool)>& onLoaded = nullptr);
+    void Load(std::string pathToFile, int textureSlot, PictureScaleMode pictureScaleMode = PictureScaleMode::SCALE_TO_FIT, PictureEffects pictureLoadingMode = PictureEffects::NONE, const std::function<void()> onLoaded = nullptr);
     void Render(glm::mat4 mvp = glm::ortho(0.0f, (float)DeviceInformation::getWidth(), 0.0f, (float)DeviceInformation::getHeight(), -1.0f, 1.0f), float opacity = 1.0f);
 };
