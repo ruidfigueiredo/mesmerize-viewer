@@ -13,8 +13,9 @@ PictureRendererWithTransition::PictureRendererWithTransition()
  }
 
 void PictureRendererWithTransition::Load(std::string path) {
-    _pictures[_currentPictureIndex + 1].Load(path, _currentPictureIndex + 1, PictureScaleMode::COVER, PictureEffects::NONE, [this](){
-        _currentPictureIndex = _currentPictureIndex + 1 % 2;
+    int loadIndex = (_currentPictureIndex + 1) % 1;
+    _pictures[loadIndex].Load(path, loadIndex, PictureScaleMode::COVER, PictureEffects::NONE, [loadIndex, this](){
+        _currentPictureIndex = loadIndex;
     });
 }
 

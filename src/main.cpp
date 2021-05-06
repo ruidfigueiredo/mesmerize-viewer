@@ -68,12 +68,10 @@ int main(void)
 {
     EaseInOut easeInOutTimingFunction{15000};
     TimingFunction &timingFunction = easeInOutTimingFunction;
+    PictureRendererWithTransition pictureRendererWithTransition;
 
-    auto results = GetFilePathsInFolder("/home/rdfi/Pictures");
-    for (auto filePath : results)
-    {
-        std::cout << filePath << std::endl;
-    }
+    auto picturePaths = GetFilePathsInFolder("/home/rdfi/Pictures");
+
     GLFWwindow *window;
 
     /* Initialize the library */
@@ -120,15 +118,8 @@ int main(void)
     GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GL_CALL(glBlendEquation(GL_FUNC_ADD));
 
-    auto resolutionScaleCalculator = std::make_shared<ResolutionScaleCalculator>();
-    auto imagePositionCalculator = std::make_shared<ImagePositionCalculator>();
+
     Picture::InitShaders();
-    Picture picture{resolutionScaleCalculator, imagePositionCalculator};
-    picture.Load("/home/rdfi/Pictures/IMG_1076.JPG", 0, PictureScaleMode::COVER);
-
-    Picture backPicture{resolutionScaleCalculator, imagePositionCalculator};
-    backPicture.Load("/home/rdfi/Pictures/IMG_20201103_133032-EFFECTS.jpg", 1, PictureScaleMode::COVER);
-
 
     glfwSwapInterval(1);
 
@@ -156,15 +147,15 @@ int main(void)
 
             if (ImGui::Button("<"))
             { // Buttons return true when clicked (most widgets return true when edited/activated)
-                int index = --counter % results.size();
-                picture.Load(results[index], 0, PictureScaleMode::COVER);
+                int index = --counter % picturePaths.size();
+                pictureRendererWithTransition.Load(picturePaths[index]);
             }
 
             ImGui::SameLine();
             if (ImGui::Button(">"))
             { // Buttons return true when clicked (most widgets return true when edited/activated)
-                int index = ++counter % results.size();
-                picture.Load(results[index], 0, PictureScaleMode::COVER);
+                int index = ++counter % picturePaths.size();
+                pictureRendererWithTransition.Load(picturePaths[index]);
             }
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
@@ -179,8 +170,9 @@ int main(void)
         glm::mat4 view = glm::translate(model, glm::vec3{50 * timingFunction.GetValue(), 0.0f, 0.0f});
 
 #ifdef ENABLE_IMGUI
-        backPicture.Render(projection);
-        picture.Render(projection, blendValue);
+        //backPicture.Render(projection);
+        //picture.Render(projection, blendValue);
+        pictureRendererWithTransition.Render();
 #else
         picture.Render();
 #endif
