@@ -7,6 +7,9 @@ int DeviceInformation::_deviceHeight = -1;
 int DeviceInformation::_maxTextureSize = -1;
 CallbackRegistry<std::function<void(int, int)>> DeviceInformation::_sizeChangedCallbackRegistry;
 
+/**
+ * @return The current device resolution's width
+ */
 int DeviceInformation::getDeviceWidth()
 {
     if (_deviceWidth == -1)
@@ -14,6 +17,9 @@ int DeviceInformation::getDeviceWidth()
     return _deviceWidth;
 }
 
+/**
+ * @return The current device resolution's height
+ */
 int DeviceInformation::getDeviceHeight()
 {
     if (_deviceHeight == -1)
@@ -21,6 +27,9 @@ int DeviceInformation::getDeviceHeight()
     return _deviceHeight;
 }
 
+/**
+ * @return the window's width
+ */
 int DeviceInformation::getWidth()
 {
     if (_width == -1)
@@ -28,6 +37,9 @@ int DeviceInformation::getWidth()
     return _width;
 }
 
+/**
+ * @return the window's height
+ */
 int DeviceInformation::getHeight()
 {
     if (_height == -1)

@@ -7,8 +7,8 @@ TimingFunction::~TimingFunction() {}
 
 double TimingFunction::GetValue() {
     auto now = std::chrono::high_resolution_clock::now();
-    auto ellapsedDuration = now - _startTime;
-    auto ellapsedDurationInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(ellapsedDuration);
+    auto elapsedDuration = now - _startTime;
+    auto elapsedDurationInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsedDuration);
     
-    return ComputeTimingFunctionValue(ellapsedDurationInMilliseconds.count());
+    return ComputeTimingFunctionValue(elapsedDurationInMilliseconds.count());
 }
