@@ -28,6 +28,8 @@
 
 #include "PictureRendererWithTransition.h"
 
+#define PICTURES_PATH "/home/rdfi/Pictures"
+
 
 std::string toLowerCase(const std::string& str){
     std::string lowerCaseString = str;
@@ -64,13 +66,22 @@ std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
     return results;
 }
 
-int main(void)
+int main(int argc, char** argv)
 {
+    std::string picturesPath;
+    if (argc > 1) {
+        picturesPath = argv[1];
+    }
+#ifdef PICTURES_PATH
+    else {
+        picturesPath = PICTURES_PATH;
+    }
+#endif
     EaseInOut easeInOutTimingFunction{15000};
     TimingFunction &timingFunction = easeInOutTimingFunction;
     PictureRendererWithTransition pictureRendererWithTransition;
 
-    auto picturePaths = GetFilePathsInFolder("/home/rdfi/Pictures");
+    auto picturePaths = GetFilePathsInFolder(picturesPath);
 
     GLFWwindow *window;
 
