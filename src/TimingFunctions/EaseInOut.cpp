@@ -1,7 +1,7 @@
 #include "EaseInOut.h"
 #include <cmath>
 
-EaseInOut::EaseInOut(double durationInSeconds): TimingFunction(durationInSeconds) {}
+EaseInOut::EaseInOut(double durationInSeconds, bool repeat, std::function<void()> onDone): TimingFunction(durationInSeconds, repeat, onDone) {}
 
 double EaseInOut::ComputeTimingFunctionValue(double elapsedTimeInMilliseconds)
 {
