@@ -27,7 +27,7 @@
 #include <algorithm>
 
 #include "PictureRendererWithTransition.h"
-
+#include "ManualTicker.h"
 #define PICTURES_PATH "/home/rdfi/Pictures"
 
 
@@ -94,7 +94,7 @@ int main(int argc, char** argv)
     int deviceHeight = vidMode->height;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(0.8 * deviceWidth, 0.8 * deviceHeight, "Mesmerize", NULL, NULL);
+    window = glfwCreateWindow(deviceWidth, deviceHeight, "Mesmerize", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -111,7 +111,7 @@ int main(int argc, char** argv)
 
     GLenum err = glewInit();
 
-    DeviceInformation::init(window, 0.8 * deviceWidth, 0.8 * deviceHeight);
+    DeviceInformation::init(window, deviceWidth, deviceHeight);
 
     if (GLEW_OK != err)
     {
@@ -138,8 +138,15 @@ int main(int argc, char** argv)
     /* Loop until the user closes the window */
     int selectedTextureSlot = 0;
     float blendValue = 1.0f;
+    static int counter = 0;
+    ManualTicker manualTicker([&] {
+        int index = ++counter % picturePaths.size();
+        pictureRendererWithTransition.Load(picturePaths[index]);
+    }, 45000);
+
     while (!glfwWindowShouldClose(window))
     {
+        manualTicker.Tick();
         /* Render here */
         renderer.Clear();
         //glClear(GL_COLOR_BUFFER_BIT);
@@ -151,8 +158,6 @@ int main(int argc, char** argv)
         GL_CALL(ImGui::NewFrame());
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
-            static int counter = 0;
-
             GL_CALL(ImGui::Begin("Debug"));                                // Create a window called "Hello, world!" and append into it.
             GL_CALL(ImGui::SliderFloat("Blend", &blendValue, 0.0f, 1.0f)); // Edit 1 float using a slider from 0.0f to 1.0f
 
