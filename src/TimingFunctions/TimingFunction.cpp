@@ -1,8 +1,7 @@
 #include "TimingFunction.h"
 
-std::chrono::_V2::system_clock::time_point TimingFunction::_startTime = std::chrono::high_resolution_clock::now();
-
 TimingFunction::TimingFunction(double durationInMilliseconds, bool repeat, std::function<void()> onDone): _durationInMilliseconds(durationInMilliseconds), _repeat(repeat) {
+    _startTime = std::chrono::high_resolution_clock::now();
     _onDoneRegistry.registerCallback(onDone, this);
 }
 TimingFunction::~TimingFunction() {

@@ -7,7 +7,7 @@
 class TimingFunction
 {
     private:
-    static std::chrono::_V2::system_clock::time_point _startTime;
+    std::chrono::_V2::system_clock::time_point _startTime;
     CallbackRegistry<std::function<void()>> _onDoneRegistry;
     bool _repeat;
     bool _isDone;

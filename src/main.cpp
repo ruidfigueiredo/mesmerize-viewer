@@ -1,6 +1,5 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
 
 #include <string>
 #include <stb/stb_image.h>
@@ -17,19 +16,18 @@
 #include "DeviceInformation.h"
 
 #include "Picture.h"
-#include "ResolutionScaleCalculator.h"
 #include "CheckGlErrors.h"
 #include "TimingFunctions/TimingFunction.h"
 #include "TimingFunctions/EaseInOut.h"
 
 #include <vector>
-#include <dirent.h>
 #include <algorithm>
 
 #include "PictureRendererWithTransition.h"
 #include "ManualTicker.h"
-#define PICTURES_PATH "/home/rdfi/Pictures"
-
+#include "shuffle.h"
+#define PICTURES_PATH "/home/rdfi/Pictures/test/"
+#include "GetFilesPathsRecursively.h"
 
 std::string toLowerCase(const std::string& str){
     std::string lowerCaseString = str;
@@ -52,19 +50,6 @@ bool isImageFile(const std::string& str)
     return false;
 }
 
-std::vector<std::string> GetFilePathsInFolder(std::string pathToFolder)
-{
-    std::vector<std::string> results;
-    DIR* dirp = opendir(pathToFolder.c_str());
-    struct dirent* directoryEntry;
-    while((directoryEntry = readdir(dirp))) {
-        if (directoryEntry->d_type == DT_REG && isImageFile(std::string{directoryEntry->d_name})) {
-            results.push_back(pathToFolder + "/" + std::string{directoryEntry->d_name});
-        }
-    }
-    closedir(dirp);
-    return results;
-}
 
 int main(int argc, char** argv)
 {
@@ -81,7 +66,13 @@ int main(int argc, char** argv)
     TimingFunction &timingFunction = easeInOutTimingFunction;
     PictureRendererWithTransition pictureRendererWithTransition;
 
-    auto picturePaths = GetFilePathsInFolder(picturesPath);
+    auto allFiles = GetFilePathsRecursively(picturesPath);
+    auto picturePaths = std::vector<std::string>();
+    std::copy_if(allFiles.begin(), allFiles.end(), std::back_inserter(picturePaths), [](const std::string& path) {
+        return isImageFile(path);
+    });
+
+    shuffle(picturePaths);
 
     GLFWwindow *window;
 
@@ -123,7 +114,7 @@ int main(int argc, char** argv)
 
     // During init, enable debug output
     GL_CALL(glEnable(GL_DEBUG_OUTPUT));
-    GL_CALL(glDebugMessageCallback(MessageCallback, 0));
+    //GL_CALL(glDebugMessageCallback(MessageCallback, 0));
 
     GL_CALL(glEnable(GL_BLEND));
     GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -142,7 +133,7 @@ int main(int argc, char** argv)
     ManualTicker manualTicker([&] {
         int index = ++counter % picturePaths.size();
         pictureRendererWithTransition.Load(picturePaths[index]);
-    }, 45000);
+    }, 5000);
 
     while (!glfwWindowShouldClose(window))
     {

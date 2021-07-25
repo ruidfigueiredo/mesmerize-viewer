@@ -3,13 +3,24 @@
 #include <stb/stb_image.h>
 #include <stb/stb_image_resize.h>
 #include <iir_gauss_blur.h>
-#include <iostream>
 #include "ImagePositionCalculator.h"
 #include "CheckGlErrors.h"
 #include <thread>
 #include <algorithm>
 #include "VertexBuffer.h"
 #include "DeviceInformation.h"
+
+#include <iostream>
+
+
+#ifdef TRACE_PICTURE
+#include <iostream>
+    #define DEBUG_PICTURE(fn) \
+            fn
+#else
+    #define DEBUG_PICTURE(fn)
+#endif
+
 
 //statics
 std::mutex Picture::ImageLoadingMutex;
@@ -91,12 +102,14 @@ std::pair<int, int> Picture::CalculateScaledDimensions(PictureScaleMode pictureS
 
 void Picture::Load(std::string path, int textureSlot, PictureScaleMode pictureScaleMode, PictureEffects pictureLoadingMode, const std::function<void()> onLoaded)
 {
-    std::cout << "Loading new picture: " << path << " \n";
+
+    DEBUG_PICTURE(std::cout << "Loading new picture: " << path << " \n");
+
     if (_loadingThread.joinable())
     {
-        std::cout << "\t\tAnother picture was loading, waiting for it to finish\n";
+        DEBUG_PICTURE(std::cout << "\t\tAnother picture was loading, waiting for it to finish\n";)
         _loadingThread.join(); //this will block the rendering thread but should only happen if the image takes so long to load that there's a new one to replace it that will need to wait for the first to finish
-        std::cout << "\t\tContinuing loading: " << path << "\n";
+        DEBUG_PICTURE(std::cout << "\t\tContinuing loading: " << path << "\n");
     }
 
 
@@ -105,14 +118,15 @@ void Picture::Load(std::string path, int textureSlot, PictureScaleMode pictureSc
         auto newPictureLoadResult = std::make_shared<PictureLoadResult>();
         newPictureLoadResult->TextureSlot = textureSlot;
         newPictureLoadResult->pictureScaleMode = pictureScaleMode;
+        newPictureLoadResult->OnLoaded = onLoaded;
 
-        std::cout << "In memory picture loading thread running, loading " << path << "\n";
+        DEBUG_PICTURE(std::cout << "In memory picture loading thread running, loading " << path << "\n");
         newPictureLoadResult->Path = path;
         stbi_set_flip_vertically_on_load(true);
         unsigned char *loadedImage = stbi_load(path.c_str(), &newPictureLoadResult->Width, &newPictureLoadResult->Height, &newPictureLoadResult->BytesPerPixel, 3);
         if (loadedImage == nullptr)
         {
-            std::cout << "Failed to load image in path: " << path << std::endl;
+            DEBUG_PICTURE(std::cout << "Failed to load image in path: " << path << std::endl);
             return;
         }
         if (_resolutionScaleCalculator->IsScallingRequired(newPictureLoadResult->Width, newPictureLoadResult->Height, DeviceInformation::getMaxTextureSize()))
@@ -129,7 +143,7 @@ void Picture::Load(std::string path, int textureSlot, PictureScaleMode pictureSc
             newPictureLoadResult->Height = newHeight;
             newPictureLoadResult->FreeImage = [output_pixels, path] {
                 delete output_pixels;
-                std::cout << "Resized picture " << path << " memory freed\n";
+                DEBUG_PICTURE(std::cout << "Resized picture " << path << " memory freed\n");
             };
         }
         else
@@ -137,7 +151,7 @@ void Picture::Load(std::string path, int textureSlot, PictureScaleMode pictureSc
             newPictureLoadResult->LoadedImage = loadedImage;
             newPictureLoadResult->FreeImage = [loadedImage, path] {
                 stbi_image_free(loadedImage);
-                std::cout << "Picture " << path << " memory freed\n";
+                DEBUG_PICTURE(std::cout << "Picture " << path << " memory freed\n");
             };
         }
 
@@ -157,11 +171,12 @@ void Picture::Load(std::string path, int textureSlot, PictureScaleMode pictureSc
         newPictureLoadResult->VertexCoordinates = _imagePositionCalculator->GetCenteredRectangleVertexCoordinates(DeviceInformation::getWidth(), DeviceInformation::getHeight(), finalDimensions.first, finalDimensions.second);
         _pictureLoadResult = newPictureLoadResult;
         _pictureLoadingState = PictureLoadingState::SEND_TO_GPU;
-        std::cout << "Picture " << path << " loaded into memory\n";
-        if (onLoaded){
-            std::cout << "Calling on loaded\n";
-            onLoaded();
-        }
+        DEBUG_PICTURE(std::cout << "Picture " << path << " loaded into memory\n");
+        //if (onLoaded){
+            DEBUG_PICTURE(std::cout << "Calling on loaded\n");
+            //onLoaded();
+        //}
+        std::cout << "Picture " << path <<  " loaded into memory\n";
     }});
 }
 
@@ -170,7 +185,9 @@ void Picture::Render(glm::mat4 mvp, float opacity)
 {
     if (_pictureLoadingState == PictureLoadingState::SEND_TO_GPU)
     {
+        std::cout << "Sending picture " << _pictureLoadResult->Path <<  "to vram\n";
         SendToGpu();
+        std::cout << "Picture " << _pictureLoadResult->Path <<  " sent to vram\n";
     }
     else if (_pictureLoadingState == PictureLoadingState::LOADED)
     {
@@ -203,7 +220,7 @@ void Picture::SendToGpu()
     }
 
     auto start = std::chrono::steady_clock::now();
-    std::cout << "SEND_TO_GPU:" << pictureLoadResult->Path << "\n";
+    DEBUG_PICTURE(std::cout << "SEND_TO_GPU:" << pictureLoadResult->Path << "\n");
     GL_CALL(glActiveTexture(GL_TEXTURE0 + pictureLoadResult->TextureSlot));
     GL_CALL(glBindTexture(GL_TEXTURE_2D, _mainTextureId));
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
@@ -216,13 +233,16 @@ void Picture::SendToGpu()
     SetupVertexArray(pictureLoadResult->VertexCoordinates);
 
     _pictureLoadingState = PictureLoadingState::LOADED;
-    std::cout << "LOADED!\n";
+    DEBUG_PICTURE(std::cout << "LOADED!\n");
+    if (pictureLoadResult->OnLoaded){
+        pictureLoadResult->OnLoaded();
+    }
 
-    std::cout << "++++++++++++++ RELEASED image loading mutex ++++++++++++++*************\n";
+
     auto end = std::chrono::steady_clock::now();
-    std::cout << "Elapsed time in milliseconds : "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-              << " ms" << std::endl;
+    DEBUG_PICTURE(std::cout << "Elapsed time in milliseconds : "
+                   << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+                   << " ms" << std::endl);
 }
 
 void Picture::RenderPicture(glm::mat4 mvp, float opacity)
@@ -237,7 +257,6 @@ void Picture::RenderPicture(glm::mat4 mvp, float opacity)
     _vertexArray->Bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     _vertexArray->Unbind();
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, GL_NONE);
     PictureShaderProgram.Unbind();
 }
-

@@ -43,6 +43,7 @@ struct PictureLoadResult {
     std::array<float, 16> VertexCoordinates;
     PictureScaleMode pictureScaleMode;
     std::function<void()> FreeImage = nullptr;
+    std::function<void()> OnLoaded = nullptr;
     std::string Path;
 
     virtual ~PictureLoadResult() {
