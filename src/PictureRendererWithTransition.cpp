@@ -12,7 +12,7 @@ const float PictureRendererWithTransition::_percentageToZoom = 0.05f;
 
 
 PictureRendererWithTransition::PictureRendererWithTransition()
-: _currentPictureIndex{-1},
+: _currentPictureIndex{0},
   _state(PictureRendererWithTransitionState::EMPTY),
   _panTimingFunction(std::make_shared<EaseInOut>(_panAnimationDuration)),
   _zoomTimingFunction(std::make_shared<EaseInOut>(_zoomAnimationDuration)),
@@ -26,14 +26,12 @@ PictureRendererWithTransition::PictureRendererWithTransition()
     Picture(std::make_shared<ResolutionScaleCalculator>(), std::make_shared<ImagePositionCalculator>())
   }
  {
-     //_pictures[GetBackPictureIndex()].Load("/home/rdfi/Pictures/Danny.jpg", GetBackPictureIndex());
-     //_pictures[GetFrontPictureIndex()].Load("/home/rdfi/Pictures/Alex.jpg", GetFrontPictureIndex());
  }
 
 void PictureRendererWithTransition::Load(std::string path) {
-    //int loadIndex = _currentPictureIndex == -1 ? GetFrontPictureIndex() : GetBackPictureIndex();
-    int loadIndex = GetFrontPictureIndex();
+    int loadIndex = GetBackPictureIndex();
     std::cout << "Loading picture into slot " << loadIndex << std::endl;
+    std::cout << "Front is: " << GetFrontPictureIndex() << ", back is: " << GetBackPictureIndex() << std::endl;
     _pictures[loadIndex].Load(path, loadIndex, PictureScaleMode::COVER, PictureEffects::NONE, [this](){
         if (_state == PictureRendererWithTransitionState::EMPTY) {
             _state = PictureRendererWithTransitionState::ONE;
@@ -59,7 +57,7 @@ void PictureRendererWithTransition::Render() {
 
         glm::mat4 projectionMatrix = projection*view*model;
 
-        float opacity = _state == PictureRendererWithTransitionState::TRANSITIONING ? _opacityTimingFunction->GetValue() : 1;
+        float opacity = _state == PictureRendererWithTransitionState::TRANSITIONING ? _opacityTimingFunction->GetValue() : 0;
         _pictures[GetBackPictureIndex()].Render(projectionMatrix);
         _pictures[GetFrontPictureIndex()].Render(projectionMatrix, 1-opacity);
 
@@ -86,4 +84,5 @@ int PictureRendererWithTransition::GetBackPictureIndex() {
 
 void PictureRendererWithTransition::Swap() {
     _currentPictureIndex = (_currentPictureIndex + 1) % 2;
+    std::cout << "Swap happened, front is now: " << GetFrontPictureIndex() << ", back is now: " << GetBackPictureIndex() << std::endl;
 }

@@ -172,11 +172,6 @@ void Picture::Load(std::string path, int textureSlot, PictureScaleMode pictureSc
         _pictureLoadResult = newPictureLoadResult;
         _pictureLoadingState = PictureLoadingState::SEND_TO_GPU;
         DEBUG_PICTURE(std::cout << "Picture " << path << " loaded into memory\n");
-        //if (onLoaded){
-            DEBUG_PICTURE(std::cout << "Calling on loaded\n");
-            //onLoaded();
-        //}
-        std::cout << "Picture " << path <<  " loaded into memory\n";
     }});
 }
 
