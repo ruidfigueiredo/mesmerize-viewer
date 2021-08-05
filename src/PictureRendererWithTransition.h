@@ -12,7 +12,7 @@ enum class PictureRendererWithTransitionState {
 
 class PictureRendererWithTransition {
     Picture _pictures[2];
-    int _currentPictureIndex;
+    int _currentLoadedPictureIndex;
     std::shared_ptr<TimingFunction> _panTimingFunction;
     std::shared_ptr<TimingFunction> _zoomTimingFunction;
     std::shared_ptr<TimingFunction> _opacityTimingFunction;
@@ -22,8 +22,8 @@ class PictureRendererWithTransition {
     const static int _opacityAnimationDuration;
     const static float _percentageToMove;
     const static float _percentageToZoom;
-    int GetFrontPictureIndex();
-    int GetBackPictureIndex();
+    int GetVisiblePictureIndex() const;
+    int GetOccludedPictureIndex() const;
     void Swap();
 
 public:

@@ -26,7 +26,7 @@
 #include "PictureRendererWithTransition.h"
 #include "ManualTicker.h"
 #include "shuffle.h"
-#define PICTURES_PATH "/home/rdfi/Pictures/test/"
+#define PICTURES_PATH "/media/rdfi/EvoExt4/Pictures backup/20210128 OnePlus Rui - 1 of 2"
 #include "GetFilesPathsRecursively.h"
 
 std::string toLowerCase(const std::string& str){
