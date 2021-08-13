@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <dirent.h>
+#include <cstring>
 
 
 void _getFilePathsRecursively(const std::string path, std::vector<std::string> &accumulator) {

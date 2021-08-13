@@ -5,9 +5,8 @@
 
 enum class PictureRendererWithTransitionState {
     EMPTY,
-    ONE,
-    TWO,
-    TRANSITIONING
+    TRANSITION_COMPLETE,
+    TRANSITION_IN_PROGRESS
 };
 
 class PictureRendererWithTransition {
@@ -22,13 +21,12 @@ class PictureRendererWithTransition {
     const static int _opacityAnimationDuration;
     const static float _percentageToMove;
     const static float _percentageToZoom;
-    int GetVisiblePictureIndex() const;
     int GetOccludedPictureIndex() const;
     void Swap();
 
 public:
     PictureRendererWithTransition();
-    void Load(std::string path);
+    void Load(std::string path, std::function<void()> onLoaded = nullptr);
     void Render();
 };
 

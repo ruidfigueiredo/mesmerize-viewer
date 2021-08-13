@@ -14,7 +14,6 @@
 
 
 #ifdef TRACE_PICTURE
-#include <iostream>
     #define DEBUG_PICTURE(fn) \
             fn
 #else
@@ -126,7 +125,7 @@ void Picture::Load(std::string path, int textureSlot, PictureScaleMode pictureSc
         unsigned char *loadedImage = stbi_load(path.c_str(), &newPictureLoadResult->Width, &newPictureLoadResult->Height, &newPictureLoadResult->BytesPerPixel, 3);
         if (loadedImage == nullptr)
         {
-            DEBUG_PICTURE(std::cout << "Failed to load image in path: " << path << std::endl);
+            std::cout << "Failed to load image in path: " << path << std::endl;
             return;
         }
         if (_resolutionScaleCalculator->IsScallingRequired(newPictureLoadResult->Width, newPictureLoadResult->Height, DeviceInformation::getMaxTextureSize()))
@@ -180,9 +179,9 @@ void Picture::Render(glm::mat4 mvp, float opacity)
 {
     if (_pictureLoadingState == PictureLoadingState::SEND_TO_GPU)
     {
-        std::cout << "Sending picture " << _pictureLoadResult->Path <<  "to vram\n";
+        DEBUG_PICTURE(std::cout << "Sending picture " << _pictureLoadResult->Path <<  " to vram\n");
         SendToGpu();
-        std::cout << "Picture " << _pictureLoadResult->Path <<  " sent to vram\n";
+        DEBUG_PICTURE(std::cout << "Picture " << _pictureLoadResult->Path <<  " sent to vram\n");
     }
     else if (_pictureLoadingState == PictureLoadingState::LOADED)
     {

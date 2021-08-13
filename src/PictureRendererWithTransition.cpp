@@ -13,12 +13,11 @@ const float PictureRendererWithTransition::_percentageToZoom = 0.05f;
 
 PictureRendererWithTransition::PictureRendererWithTransition()
 : _currentLoadedPictureIndex{0},
-  _state(PictureRendererWithTransitionState::ONE),
+  _state(PictureRendererWithTransitionState::TRANSITION_COMPLETE),
   _panTimingFunction(std::make_shared<EaseInOut>(_panAnimationDuration)),
   _zoomTimingFunction(std::make_shared<EaseInOut>(_zoomAnimationDuration)),
   _opacityTimingFunction(std::make_shared<EaseInOut>(_opacityAnimationDuration, false, [this](){
-      _state = PictureRendererWithTransitionState::TWO;
-      std::cout << "Opacity ended\n";
+      _state = PictureRendererWithTransitionState::TRANSITION_COMPLETE;
       Swap();
   })),
   _pictures {
@@ -28,17 +27,17 @@ PictureRendererWithTransition::PictureRendererWithTransition()
  {
  }
 
-void PictureRendererWithTransition::Load(std::string path) {
+ void PictureRendererWithTransition::Load(std::string path, std::function<void()> onLoaded) {
     int loadIndex = _currentLoadedPictureIndex;
-    std::cout << "Loading picture into slot " << loadIndex << std::endl;
-    //std::cout << "Visible is: " << GetVisiblePictureIndex() << ", Occluded is: " << GetOccludedPictureIndex() << std::endl;
-    _pictures[loadIndex].Load(path, loadIndex, PictureScaleMode::COVER, PictureEffects::NONE, [this](){
+    _pictures[loadIndex].Load(path, loadIndex, PictureScaleMode::COVER, PictureEffects::NONE, [this, onLoaded](){
         if (_state == PictureRendererWithTransitionState::EMPTY) {
-            _state = PictureRendererWithTransitionState::ONE;
+            _state = PictureRendererWithTransitionState::TRANSITION_COMPLETE;
         }else {
-            _state = PictureRendererWithTransitionState::TRANSITIONING;
+            _state = PictureRendererWithTransitionState::TRANSITION_IN_PROGRESS;
             _opacityTimingFunction->Reset();
         }
+        if(onLoaded)
+            onLoaded();
     });
 }
 
@@ -56,10 +55,9 @@ void PictureRendererWithTransition::Render() {
 
     glm::mat4 projectionMatrix = projection*view*model;
 
-    //float opacity = _state == PictureRendererWithTransitionState::TRANSITIONING ? _opacityTimingFunction->GetValue() : 0;
     float opacityFront = 0;
     float opacityBack = 0;
-    if (_state == PictureRendererWithTransitionState::TRANSITIONING) {
+    if (_state == PictureRendererWithTransitionState::TRANSITION_IN_PROGRESS) {
         if (_currentLoadedPictureIndex == 0) { //going from 0 to 1
             opacityFront = _opacityTimingFunction->GetValue();
             opacityBack = 1 - opacityFront;
@@ -80,15 +78,10 @@ void PictureRendererWithTransition::Render() {
     _pictures[0].Render(projectionMatrix, opacityFront);
 }
 
-int PictureRendererWithTransition::GetVisiblePictureIndex() const {
-    return (_currentLoadedPictureIndex + 1) % 2;
-}
-
 int PictureRendererWithTransition::GetOccludedPictureIndex() const {
     return (_currentLoadedPictureIndex + 2) % 2;
 }
 
 void PictureRendererWithTransition::Swap() {
     _currentLoadedPictureIndex = (_currentLoadedPictureIndex + 1) % 2;
-    std::cout << "Swap happened, visible is now: " << GetVisiblePictureIndex() << ", occluded is now: " << GetOccludedPictureIndex() << std::endl;
 }

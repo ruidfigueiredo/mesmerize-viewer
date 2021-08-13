@@ -48,7 +48,6 @@ struct PictureLoadResult {
 
     virtual ~PictureLoadResult() {
         if (FreeImage != nullptr) {
-            std::cout << "Freeing memory for image" << Path << std::endl;
             FreeImage();
         }
     }

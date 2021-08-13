@@ -16,7 +16,7 @@ set(ProjectFiles
         "src/TimingFunctions/EaseInOut.cpp"
         "src/PictureRendererWithTransition.cpp"
         "src/ManualTicker.cpp"
-        "src/main.cpp" )
+        "src/main.cpp")
 add_executable(${PROJECT_NAME} ${ProjectFiles})
 
 set(IncludeDirectories 

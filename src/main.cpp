@@ -1,10 +1,12 @@
+#define PICTURES_PATH "/home/pi/Pictures"
+#define ENABLE_GL_DEBUG_OUTPUT 0
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <string>
-#include <stb/stb_image.h>
 #include <glm/glm.hpp>
-#define ENABLE_IMGUI 1
+//#define ENABLE_IMGUI 1
 
 #ifdef ENABLE_IMGUI
 #include <imgui/imgui.h>
@@ -14,41 +16,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Renderer.h"
 #include "DeviceInformation.h"
-
 #include "Picture.h"
 #include "CheckGlErrors.h"
 #include "TimingFunctions/TimingFunction.h"
 #include "TimingFunctions/EaseInOut.h"
-
-#include <vector>
-#include <algorithm>
-
 #include "PictureRendererWithTransition.h"
 #include "ManualTicker.h"
-#include "shuffle.h"
-#define PICTURES_PATH "/media/rdfi/EvoExt4/Pictures backup/20210128 OnePlus Rui - 1 of 2"
-#include "GetFilesPathsRecursively.h"
+#include "GetSuffledPicturePaths.h"
 
-std::string toLowerCase(const std::string& str){
-    std::string lowerCaseString = str;
-    std::transform(str.begin(), str.end(), lowerCaseString.begin(), [](unsigned char c) {
-        return tolower(c);
-    });
-    return lowerCaseString;
-}
 
-bool isImageFile(const std::string& str)
-{
-    std::string imagePath = toLowerCase(str);
-
-    static const std::vector<std::string> supportedImageExtensions = {".jpg", ".png"};
-    for(const auto& supportedExtension : supportedImageExtensions) {
-        if (toLowerCase(str).find(supportedExtension) == str.size() - supportedExtension.size()){
-            return true;
-        }
-    }
-    return false;
-}
 
 
 int main(int argc, char** argv)
@@ -65,14 +41,7 @@ int main(int argc, char** argv)
     EaseInOut easeInOutTimingFunction{15000};
     TimingFunction &timingFunction = easeInOutTimingFunction;
     PictureRendererWithTransition pictureRendererWithTransition;
-
-    auto allFiles = GetFilePathsRecursively(picturesPath);
-    auto picturePaths = std::vector<std::string>();
-    std::copy_if(allFiles.begin(), allFiles.end(), std::back_inserter(picturePaths), [](const std::string& path) {
-        return isImageFile(path);
-    });
-
-    shuffle(picturePaths);
+    auto picturePaths = GetShuffledPicturePaths::GetShuffledPicturePaths(picturesPath);
 
     GLFWwindow *window;
 
@@ -112,9 +81,11 @@ int main(int argc, char** argv)
     }
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 
+#if ENABLE_GL_DEBUG_OUTPUT
     // During init, enable debug output
     GL_CALL(glEnable(GL_DEBUG_OUTPUT));
-    //GL_CALL(glDebugMessageCallback(MessageCallback, 0));
+    GL_CALL(glDebugMessageCallback(MessageCallback, 0));
+#endif
 
     GL_CALL(glEnable(GL_BLEND));
     GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -127,30 +98,27 @@ int main(int argc, char** argv)
 
     Renderer renderer;
     /* Loop until the user closes the window */
-    int selectedTextureSlot = 0;
-    float blendValue = 1.0f;
     static int counter = 0;
     ManualTicker manualTicker([&] {
         int index = ++counter % picturePaths.size();
-        pictureRendererWithTransition.Load(picturePaths[index]);
+        manualTicker.Pause(15000); //some pictures take a considerable amount of time to load in the pi, more than 15 secs probably there was an error and the event is not coming
+        pictureRendererWithTransition.Load(picturePaths[index], [&manualTicker]() {
+            manualTicker.Resume();
+        });
     }, 5000);
 
     while (!glfwWindowShouldClose(window))
     {
-        manualTicker.Tick();
+        manualTicker.Tick(); //will trigger the change of picture if enough time has passed
         /* Render here */
         renderer.Clear();
-        //glClear(GL_COLOR_BUFFER_BIT);
 
 #ifdef ENABLE_IMGUI
-        // Start the Dear ImGui frame
         GL_CALL(ImGui_ImplOpenGL3_NewFrame());
         GL_CALL(ImGui_ImplGlfw_NewFrame());
         GL_CALL(ImGui::NewFrame());
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
-            GL_CALL(ImGui::Begin("Debug"));                                // Create a window called "Hello, world!" and append into it.
-            GL_CALL(ImGui::SliderFloat("Blend", &blendValue, 0.0f, 1.0f)); // Edit 1 float using a slider from 0.0f to 1.0f
+            GL_CALL(ImGui::Begin("Debug"));
 
             if (ImGui::Button("<"))
             { // Buttons return true when clicked (most widgets return true when edited/activated)
@@ -176,13 +144,8 @@ int main(int argc, char** argv)
         glm::mat4 model = glm::scale(glm::mat4{1.0f}, glm::vec3{1.0f + 0.0f * timingFunction.GetValue(), 1.0f + 0.0f * timingFunction.GetValue(), 1.0f});
         glm::mat4 view = glm::translate(model, glm::vec3{50 * timingFunction.GetValue(), 0.0f, 0.0f});
 
-#ifdef ENABLE_IMGUI
-        //backPicture.Render(projection);
-        //picture.Render(projection, blendValue);
         pictureRendererWithTransition.Render();
-#else
-        picture.Render();
-#endif
+
 #ifdef ENABLE_IMGUI
         GL_CALL(ImGui::Render());
         GL_CALL(ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()));
