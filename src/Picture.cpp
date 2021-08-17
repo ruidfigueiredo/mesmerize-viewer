@@ -23,12 +23,13 @@
 
 //statics
 std::mutex Picture::ImageLoadingMutex;
-ShaderProgram Picture::PictureShaderProgram;
+std::unique_ptr<ShaderProgram> Picture::PictureShaderProgram;
 void Picture::InitShaders()
 {
-    PictureShaderProgram.Init();
-    PictureShaderProgram.AddVertexShader("shaders/vertex.shader");
-    PictureShaderProgram.AddFragmentShader("shaders/fragment.shader");
+    PictureShaderProgram = std::make_unique<ShaderProgram>();
+    PictureShaderProgram->Init();
+    PictureShaderProgram->AddVertexShader("shaders/vertex.shader");
+    PictureShaderProgram->AddFragmentShader("shaders/fragment.shader");
 }
 
 Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator) : _resolutionScaleCalculator(rcs),
@@ -241,10 +242,10 @@ void Picture::SendToGpu()
 
 void Picture::RenderPicture(glm::mat4 mvp, float opacity)
 {
-    PictureShaderProgram.Bind();
-    PictureShaderProgram.SetUniformf("blendValue", opacity);
-    PictureShaderProgram.SetUniformMat4f("mvp", mvp);
-    PictureShaderProgram.SetUniformi("textureSlot", _pictureLoadResult->TextureSlot);
+    PictureShaderProgram->Bind();
+    PictureShaderProgram->SetUniformf("blendValue", opacity);
+    PictureShaderProgram->SetUniformMat4f("mvp", mvp);
+    PictureShaderProgram->SetUniformi("textureSlot", _pictureLoadResult->TextureSlot);
 
     GL_CALL(glActiveTexture(GL_TEXTURE0 + _pictureLoadResult->TextureSlot));
     GL_CALL(glBindTexture(GL_TEXTURE_2D, _mainTextureId));
@@ -252,5 +253,5 @@ void Picture::RenderPicture(glm::mat4 mvp, float opacity)
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     _vertexArray->Unbind();
     glBindTexture(GL_TEXTURE_2D, GL_NONE);
-    PictureShaderProgram.Unbind();
+    PictureShaderProgram->Unbind();
 }

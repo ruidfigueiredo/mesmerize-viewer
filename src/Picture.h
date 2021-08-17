@@ -65,7 +65,7 @@ class Picture
     std::shared_ptr<PictureLoadResult> _pictureLoadResult;
     std::thread _loadingThread;
     static std::mutex ImageLoadingMutex;
-    static ShaderProgram PictureShaderProgram;
+    static std::unique_ptr<ShaderProgram> PictureShaderProgram;
 
     void SetupVertexArray(const std::array<float, 16> & squareCoordinatesWithTextureCoordinates);
     std::pair<int, int> CalculateScaledDimensions(PictureScaleMode pictureScaleMode, int deviceWidth, int deviceHeight, int width, int height);

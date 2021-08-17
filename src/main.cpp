@@ -38,10 +38,11 @@ int main(int argc, char** argv)
         picturesPath = PICTURES_PATH;
     }
 #endif
+    auto picturePaths = GetShuffledPicturePaths::GetShuffledPicturePaths(picturesPath);
+
     EaseInOut easeInOutTimingFunction{15000};
     TimingFunction &timingFunction = easeInOutTimingFunction;
     PictureRendererWithTransition pictureRendererWithTransition;
-    auto picturePaths = GetShuffledPicturePaths::GetShuffledPicturePaths(picturesPath);
 
     GLFWwindow *window;
 
@@ -79,9 +80,9 @@ int main(int argc, char** argv)
 
         fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
     }
-    fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 
 #if ENABLE_GL_DEBUG_OUTPUT
+    fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
     // During init, enable debug output
     GL_CALL(glEnable(GL_DEBUG_OUTPUT));
     GL_CALL(glDebugMessageCallback(MessageCallback, 0));

@@ -3,10 +3,16 @@
 #include <string>
 #include <dirent.h>
 #include <cstring>
+#include <iostream>
+#include <cstdlib>
 
 
 void _getFilePathsRecursively(const std::string path, std::vector<std::string> &accumulator) {
     DIR* directory = opendir(path.c_str());
+    if (directory == nullptr) {
+        std::cout << "Could not open directory: " << path << std::endl;
+        exit(1);
+    }
     dirent *directoryEntry = nullptr;
 
     while((directoryEntry = readdir(directory))) {
