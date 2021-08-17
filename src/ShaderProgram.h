@@ -12,6 +12,7 @@ private:
 public:
     ShaderProgram();
     ~ShaderProgram();
+    void Init();
     void AddVertexShader(const std::string &pathToShader) const;
     void AddFragmentShader(const std::string &pathToShader) const;
     void SetUniformi(const std::string &name, const int &v1);
@@ -23,7 +24,7 @@ public:
 
 private:
     const std::string GetTextFileContents(const std::string &filePath) const;
-    const unsigned int CreateShader(unsigned int programId, unsigned int type, const char *source) const;
+    const unsigned int CreateShader(unsigned int type, const char *source) const;
     void LoadAndLinkShader(unsigned int type, const std::string &filePath) const;
     int GetLocation(const std::string &name);
 };

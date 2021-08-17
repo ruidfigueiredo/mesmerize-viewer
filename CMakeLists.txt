@@ -1,18 +1,22 @@
-cmake_minimum_required(VERSION 3.19.2)
-project(MesmerizeClient)
+cmake_minimum_required(VERSION 3.13.4)
+project(MesmerizeViewer)
 add_subdirectory(vendor)
-set(ProjectFiles 
-    "src/IndexBuffer.cpp"
-    "src/Renderer.cpp"
-    "src/VertexArray.cpp"
-    "src/VertexBufferLayout.cpp"
-    "src/ShaderProgram.cpp"
-    "src/VertexBuffer.cpp"
-    "src/ImagePositionCalculator.cpp"
-    "src/ResolutionScaleCalculator.cpp"
-    "src/PictureLoader.cpp"
-    "src/main.cpp"
-    )
+set(ProjectFiles
+        "src/IndexBuffer.cpp"
+        "src/Renderer.cpp"
+        "src/VertexArray.cpp"
+        "src/VertexBufferLayout.cpp"
+        "src/ShaderProgram.cpp"
+        "src/VertexBuffer.cpp"
+        "src/ImagePositionCalculator.cpp"
+        "src/ResolutionScaleCalculator.cpp"
+        "src/Picture.cpp"
+        "src/DeviceInformation.cpp"
+        "src/TimingFunctions/TimingFunction.cpp"
+        "src/TimingFunctions/EaseInOut.cpp"
+        "src/PictureRendererWithTransition.cpp"
+        "src/ManualTicker.cpp"
+        "src/main.cpp")
 add_executable(${PROJECT_NAME} ${ProjectFiles})
 
 set(IncludeDirectories 
@@ -25,7 +29,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_NAME run)
 
 file(COPY example.jpg DESTINATION ${CMAKE_BINARY_DIR})
 
-add_custom_command(TARGET MesmerizeClient PRE_BUILD
+add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/src/shaders ${CMAKE_BINARY_DIR}/shaders)
 

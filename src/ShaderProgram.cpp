@@ -4,22 +4,29 @@
 #include <fstream>
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp>
+#include "CheckGlErrors.h"
 
-ShaderProgram::ShaderProgram() : _programId(glCreateProgram()){};
+ShaderProgram::ShaderProgram() : _programId(-2){};
 
 ShaderProgram::~ShaderProgram()
 {
-    glDeleteProgram(_programId);
+    if (_programId != -2)
+        GL_CALL(glDeleteProgram(_programId));
+}
+
+void ShaderProgram::Init()
+{
+    _programId = glCreateProgram();
 }
 
 void ShaderProgram::Bind() const
 {
-    glUseProgram(_programId);
+    GL_CALL(glUseProgram(_programId));
 }
 
 void ShaderProgram::Unbind() const
 {
-    glUseProgram(0);
+    GL_CALL(glUseProgram(0));
 }
 
 void ShaderProgram::AddFragmentShader(const std::string &pathToFile) const
@@ -56,35 +63,35 @@ void ShaderProgram::SetUniform4f(const std::string &name, const float &v1, const
 {
     int location = GetLocation(name);
 
-    glUniform4f(location, v1, v2, v3, v4);
+    GL_CALL(glUniform4f(location, v1, v2, v3, v4));
 }
 
 void ShaderProgram::SetUniformi(const std::string &name, const int &value)
 {
     int location = GetLocation(name);
-    glUniform1i(location, value);
+    GL_CALL(glUniform1i(location, value));
 }
 
 void ShaderProgram::SetUniformf(const std::string &name, const float &value)
 {
     int location = GetLocation(name);
-    glUniform1f(location, value);
+    GL_CALL(glUniform1f(location, value));
 }
 
 void ShaderProgram::SetUniformMat4f(const std::string &name, const glm::mat4 &proj)
 {
     int location = GetLocation(name);
-    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(proj));
+    GL_CALL(glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(proj)));
 }
 
 void ShaderProgram::LoadAndLinkShader(unsigned int type, const std::string &pathToFile) const
 {
     const std::string &shaderSourceCode = GetTextFileContents(pathToFile);
-    unsigned int shaderId = CreateShader(_programId, type, shaderSourceCode.c_str());
-    glAttachShader(_programId, shaderId);
-    glLinkProgram(_programId);
-    glValidateProgram(_programId);
-    glDeleteShader(shaderId);
+    unsigned int shaderId = CreateShader(type, shaderSourceCode.c_str());
+    GL_CALL(glAttachShader(_programId, shaderId));
+    GL_CALL(glLinkProgram(_programId));
+    GL_CALL(glValidateProgram(_programId));
+    GL_CALL(glDeleteShader(shaderId));
 }
 
 const std::string ShaderProgram::GetTextFileContents(const std::string &filePath) const
@@ -102,24 +109,24 @@ const std::string ShaderProgram::GetTextFileContents(const std::string &filePath
     return ss.str();
 }
 
-const unsigned int ShaderProgram::CreateShader(unsigned int programId, unsigned int type, const char *source) const
+const unsigned int ShaderProgram::CreateShader(unsigned int type, const char *source) const
 {
     const unsigned int shaderId = glCreateShader(type);
-    glShaderSource(shaderId, 1, &source, nullptr);
-    glCompileShader(shaderId);
+    GL_CALL(glShaderSource(shaderId, 1, &source, nullptr));
+    GL_CALL(glCompileShader(shaderId));
 
     int compileStatusFlag;
-    glGetShaderiv(shaderId, GL_COMPILE_STATUS, &compileStatusFlag);
+    GL_CALL(glGetShaderiv(shaderId, GL_COMPILE_STATUS, &compileStatusFlag));
     if (compileStatusFlag == GL_FALSE)
     {
         int logLength;
-        glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength);
-        char *errorMessage = new char[logLength];
-        glGetShaderInfoLog(shaderId, logLength, &logLength, errorMessage);
+        GL_CALL(glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength));
+        char errorMessage[logLength];
+        GL_CALL(glGetShaderInfoLog(shaderId, logLength, &logLength, errorMessage));
         std::cout << "Error compiling shader: " << std::endl;
         std::cout << "type: " << (type == GL_VERTEX_SHADER ? "Vertex shader" : "Fragment shader") << std::endl;
         std::cout << errorMessage;
-        delete[] errorMessage;
+        throw std::string(errorMessage);
     }
 
     return shaderId;
