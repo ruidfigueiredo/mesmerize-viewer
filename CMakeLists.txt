@@ -25,7 +25,7 @@ set(IncludeDirectories
     )
 target_include_directories(${PROJECT_NAME} PRIVATE ${IncludeDirectories})
 target_link_libraries(${PROJECT_NAME} glfw glew glm imgui iir_gauss stb)
-set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_NAME run)
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_NAME mesmerize)
 
 file(COPY example.jpg DESTINATION ${CMAKE_BINARY_DIR})
 
