@@ -34,6 +34,9 @@ namespace GetShuffledPicturePaths {
             return isImageFile(path);
         });
 
+        if (picturePaths.size() == 0)
+            return picturePaths;
+
         shuffle(picturePaths);
         return picturePaths;
     }

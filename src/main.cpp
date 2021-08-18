@@ -39,6 +39,10 @@ int main(int argc, char** argv)
     }
 #endif
     auto picturePaths = GetShuffledPicturePaths::GetShuffledPicturePaths(picturesPath);
+    if (picturePaths.empty()) {
+        std::cout << "Folder " << picturesPath << " has no pictures (.jpg or .png)\n";
+        return 0;
+    }
 
     EaseInOut easeInOutTimingFunction{15000};
     TimingFunction &timingFunction = easeInOutTimingFunction;

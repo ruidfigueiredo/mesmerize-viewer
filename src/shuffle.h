@@ -9,7 +9,7 @@ void shuffle(std::vector<T>& array) {
         srand(time(nullptr));
         isInitialized =  true;
     }
-    for(auto i = array.size()-1; i > 1; i--) {
+    for(int i = array.size()-1; i > 1; i--) {
         auto randomIndex = rand() % (i - 1);
         auto temp = array[i];
         array[i] = array[randomIndex];
