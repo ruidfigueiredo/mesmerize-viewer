@@ -16,16 +16,13 @@ class PictureRendererWithTransition {
     std::shared_ptr<TimingFunction> _zoomTimingFunction;
     std::shared_ptr<TimingFunction> _opacityTimingFunction;
     PictureRendererWithTransitionState _state;
-    const static int _panAnimationDuration;
-    const static int _zoomAnimationDuration;
-    const static int _opacityAnimationDuration;
-    const static float _percentageToMove;
-    const static float _percentageToZoom;
+    const float _percentageToMove;
+    const float _percentageToZoom;
     int GetOccludedPictureIndex() const;
     void Swap();
 
 public:
-    PictureRendererWithTransition();
+    PictureRendererWithTransition(int panAnimationDuration = 10000, int zoomAnimationDuration = 20000, int opacityAnimationDuration = 4000, float percentageToMove= 0.05f, float percentageToZoom = 0.05f);
     void Load(std::string path, std::function<void()> onLoaded = nullptr);
     void Render();
 };

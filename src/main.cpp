@@ -1,52 +1,57 @@
-#define PICTURES_PATH "/home/pi/Pictures"
 #define ENABLE_GL_DEBUG_OUTPUT 0
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 #include <string>
-#include <glm/glm.hpp>
+
 //#define ENABLE_IMGUI 1
 
 #ifdef ENABLE_IMGUI
+#include <glm/glm.hpp>
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 #endif
-#include <glm/gtc/matrix_transform.hpp>
 #include "Renderer.h"
 #include "DeviceInformation.h"
 #include "Picture.h"
 #include "CheckGlErrors.h"
-#include "TimingFunctions/TimingFunction.h"
-#include "TimingFunctions/EaseInOut.h"
 #include "PictureRendererWithTransition.h"
 #include "ManualTicker.h"
 #include "GetSuffledPicturePaths.h"
+#include "MesmerizeOptions.h"
 
 
 
 
-int main(int argc, char** argv)
+int main(int argc, const char** argv)
 {
-    std::string picturesPath;
-    if (argc > 1) {
-        picturesPath = argv[1];
+    if (argc == 1){
+        MesmerizeOptions::PrintOptions();
+        exit(0);
     }
-#ifdef PICTURES_PATH
-    else {
-        picturesPath = PICTURES_PATH;
+
+    MesmerizeOptions options;
+    try {
+        options = MesmerizeOptions::FromArgs(argc, argv);
+    }catch(std::runtime_error e) {
+        std::cout << "Unknown option: " << e.what() << "\n\n";
+        MesmerizeOptions::PrintOptions();
+        exit(1);
     }
-#endif
-    auto picturePaths = GetShuffledPicturePaths::GetShuffledPicturePaths(picturesPath);
+
+    auto picturePaths = GetShuffledPicturePaths::GetShuffledPicturePaths(options.PathToPicturesFolder);
     if (picturePaths.empty()) {
-        std::cout << "Folder " << picturesPath << " has no pictures (.jpg or .png)\n";
+        std::cout << "Folder " << options.PathToPicturesFolder << " has no pictures (.jpg or .png)\n";
         return 0;
     }
 
-    EaseInOut easeInOutTimingFunction{15000};
-    TimingFunction &timingFunction = easeInOutTimingFunction;
-    PictureRendererWithTransition pictureRendererWithTransition;
+    PictureRendererWithTransition pictureRendererWithTransition(
+            options.PanAnimationDuration,
+            options.ZoomAnimationDuration,
+            options.OpacityAnimationDuration,
+            options.PanPercentage,
+            options.ZoomPercentage);
 
     GLFWwindow *window;
 
@@ -58,8 +63,20 @@ int main(int argc, char** argv)
     int deviceWidth = vidMode->width;
     int deviceHeight = vidMode->height;
 
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(deviceWidth, deviceHeight, "Mesmerize", NULL, NULL);
+    if (options.IsFullScreen) {
+        if (options.IsResolutionSetToMax) {
+            window = glfwCreateWindow(deviceWidth, deviceHeight, "Mesmerize", glfwGetPrimaryMonitor(), NULL);
+        } else {
+            window = glfwCreateWindow(options.ResolutionX, options.ResolutionY, "Mesmerize", glfwGetPrimaryMonitor(),NULL);
+        }
+    }else {
+        if (options.IsResolutionSetToMax) {
+            window = glfwCreateWindow(deviceWidth, deviceHeight, "Mesmerize", NULL, NULL);
+        } else {
+            window = glfwCreateWindow(options.ResolutionX, options.ResolutionY, "Mesmerize", NULL, NULL);
+        }
+    }
+
     if (!window)
     {
         glfwTerminate();
@@ -67,6 +84,13 @@ int main(int argc, char** argv)
     }
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+        if (key == GLFW_KEY_ESCAPE){
+            exit(0);
+        }
+    });
+
+    DeviceInformation::init(window, deviceWidth, deviceHeight);
 
 #ifdef ENABLE_IMGUI
     GL_CALL(ImGui::CreateContext());
@@ -76,12 +100,9 @@ int main(int argc, char** argv)
 
     GLenum err = glewInit();
 
-    DeviceInformation::init(window, deviceWidth, deviceHeight);
-
     if (GLEW_OK != err)
     {
         /* Problem: glewInit failed, something is seriously wrong. */
-
         fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
     }
 
@@ -110,7 +131,7 @@ int main(int argc, char** argv)
         pictureRendererWithTransition.Load(picturePaths[index], [&manualTicker]() {
             manualTicker.Resume();
         });
-    }, 5000);
+    }, options.DisplayPictureDuration);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -144,10 +165,6 @@ int main(int argc, char** argv)
             ImGui::End();
         }
 #endif
-
-        glm::mat4 projection = glm::ortho(0.0f, 1.0f * DeviceInformation::getWidth(), 0.0f, 1.0f * DeviceInformation::getHeight(), -1.0f, 1.0f);
-        glm::mat4 model = glm::scale(glm::mat4{1.0f}, glm::vec3{1.0f + 0.0f * timingFunction.GetValue(), 1.0f + 0.0f * timingFunction.GetValue(), 1.0f});
-        glm::mat4 view = glm::translate(model, glm::vec3{50 * timingFunction.GetValue(), 0.0f, 0.0f});
 
         pictureRendererWithTransition.Render();
 
