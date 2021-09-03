@@ -2,16 +2,16 @@
 #include "MesmerizeOptions.h"
 
 MesmerizeOptions::MesmerizeOptions() :
-    IsFullScreen(true),
-    IsResolutionSetToMax(false),
+    IsFullScreen(false),
+    IsResolutionSetToMax(true),
     DisplayPictureDuration(15000),
     OpacityAnimationDuration(4000),
     ZoomAnimationDuration(20000),
     PanAnimationDuration(10000),
-    ZoomPercentage(0),
-    PanPercentage(0),
-    ResolutionX(1920),
-    ResolutionY(1080) { }
+    ZoomPercentage(.05f),
+    PanPercentage(.05f),
+    ResolutionX(-1),
+    ResolutionY(-1) { }
 
 
 void MesmerizeOptions::PrintOptions() {
@@ -20,10 +20,10 @@ void MesmerizeOptions::PrintOptions() {
                  "\t[--pan-animation-duration=duration_in_seconds] [--zoom-percentage=number_1_to_100]\n"\
                  "\t[--pan-percentage=number_1_to_100] path_to_folder_with_images_jpg_and_png\n"\
                  "\n\nDefaults:\n"\
-                 "\t--full-screen\n"\
-                 "\t--resolution=1920x1080 (this is what works best on a pi 4)\n"\
+                 "\t--window\n"\
+                 "\t--resolution=max (1920x1080 is what works best on a pi 4)\n"\
                  "\t--display-picture-duration=15\n"\
-                 "\t--opacity-animation-duration=3\n"\
+                 "\t--opacity-animation-duration=4\n"\
                  "\t--zoom-animation-duration=20\n"\
                  "\t--pan-animation-duration=10\n"\
                  "\t--zoom-percentage=5\n"\

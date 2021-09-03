@@ -86,6 +86,12 @@ int main(int argc, const char** argv)
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
         if (key == GLFW_KEY_ESCAPE){
+#ifdef ENABLE_IMGUI
+            GL_CALL(ImGui_ImplGlfw_Shutdown());
+            GL_CALL(ImGui_ImplOpenGL3_Shutdown());
+            GL_CALL(ImGui::DestroyContext());
+#endif
+            glfwTerminate();
             exit(0);
         }
     });
