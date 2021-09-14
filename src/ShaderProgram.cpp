@@ -5,6 +5,7 @@
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp>
 #include "CheckGlErrors.h"
+#include <sys/stat.h>
 
 ShaderProgram::ShaderProgram() : _programId(-2){};
 
@@ -31,12 +32,24 @@ void ShaderProgram::Unbind() const
 
 void ShaderProgram::AddFragmentShader(const std::string &pathToFile) const
 {
-    LoadAndLinkShader(GL_FRAGMENT_SHADER, pathToFile);
+    const std::string &shaderSourceCode = GetTextFileContents(pathToFile);
+    LoadAndLinkShader(GL_FRAGMENT_SHADER, shaderSourceCode.c_str());
 }
 
 void ShaderProgram::AddVertexShader(const std::string &pathToFile) const
 {
-    LoadAndLinkShader(GL_VERTEX_SHADER, pathToFile);
+    const std::string &shaderSourceCode = GetTextFileContents(pathToFile);
+    LoadAndLinkShader(GL_VERTEX_SHADER, shaderSourceCode.c_str());
+}
+
+void ShaderProgram::AddVertexShaderCode(const char* sourceCode) const
+{
+    LoadAndLinkShader(GL_VERTEX_SHADER, sourceCode);
+}
+
+void ShaderProgram::AddFragmentShaderCode(const char* sourceCode) const
+{
+    LoadAndLinkShader(GL_FRAGMENT_SHADER, sourceCode);
 }
 
 int ShaderProgram::GetLocation(const std::string &name)
@@ -84,10 +97,9 @@ void ShaderProgram::SetUniformMat4f(const std::string &name, const glm::mat4 &pr
     GL_CALL(glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(proj)));
 }
 
-void ShaderProgram::LoadAndLinkShader(unsigned int type, const std::string &pathToFile) const
+void ShaderProgram::LoadAndLinkShader(unsigned int type, const char* shaderCode) const
 {
-    const std::string &shaderSourceCode = GetTextFileContents(pathToFile);
-    unsigned int shaderId = CreateShader(type, shaderSourceCode.c_str());
+    unsigned int shaderId = CreateShader(type, shaderCode);
     GL_CALL(glAttachShader(_programId, shaderId));
     GL_CALL(glLinkProgram(_programId));
     GL_CALL(glValidateProgram(_programId));
@@ -96,6 +108,11 @@ void ShaderProgram::LoadAndLinkShader(unsigned int type, const std::string &path
 
 const std::string ShaderProgram::GetTextFileContents(const std::string &filePath) const
 {
+
+    struct stat statResult;
+    if (stat(filePath.c_str(), &statResult) == -1) {
+        throw std::runtime_error(filePath + " not found (with shader code)");
+    }
     std::ifstream fileStream(filePath);
     if (!fileStream.is_open())
         throw "Could not open file:" + filePath;

@@ -12,13 +12,13 @@
 
 #include <iostream>
 
-
 #ifdef TRACE_PICTURE
     #define DEBUG_PICTURE(fn) \
             fn
 #else
     #define DEBUG_PICTURE(fn)
 #endif
+
 
 
 //statics
@@ -28,8 +28,42 @@ void Picture::InitShaders()
 {
     PictureShaderProgram = std::make_unique<ShaderProgram>();
     PictureShaderProgram->Init();
+#ifndef NDEBUG /*NDEBUG is added by CMAKE when CMAKE_BUILD_TYPE is Release*/
     PictureShaderProgram->AddVertexShader("shaders/vertex.shader");
     PictureShaderProgram->AddFragmentShader("shaders/fragment.shader");
+#else
+    PictureShaderProgram->AddVertexShaderCode(
+            "#version 300 es\n"
+            "\n"
+            "layout(location = 0) in vec4 position;\n"
+            "layout(location = 1) in vec2 _textureCoordinate;\n"
+            "\n"
+            "uniform mat4 mvp;\n"
+            "\n"
+            "out vec2 textureCoordinate;\n"
+            "\n"
+            "void main() \n"
+            "{\n"
+            "    gl_Position = mvp * position;\n"
+            "    textureCoordinate = _textureCoordinate;\n"
+            "}"
+    );
+    PictureShaderProgram->AddFragmentShaderCode(
+            "#version 300 es\n"
+            "\n"
+            "in mediump vec2 textureCoordinate;\n"
+            "uniform sampler2D textureSlot;\n"
+            "uniform mediump float blendValue;\n"
+            "\n"
+            "out mediump vec4 color;\n"
+            "\n"
+            "void main() \n"
+            "{\n"
+            "    mediump vec4 textureColor = texture(textureSlot, textureCoordinate);\n"
+            "    textureColor.a = blendValue;\n"
+            "    color = textureColor;\n"
+            "}");
+#endif
 }
 
 Picture::Picture(std::shared_ptr<ResolutionScaleCalculator> rcs, std::shared_ptr<ImagePositionCalculator> imagePositionCalculator) : _resolutionScaleCalculator(rcs),

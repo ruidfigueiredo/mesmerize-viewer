@@ -14,7 +14,9 @@ public:
     ~ShaderProgram();
     void Init();
     void AddVertexShader(const std::string &pathToShader) const;
+    void AddVertexShaderCode(const char* sourceCode) const;
     void AddFragmentShader(const std::string &pathToShader) const;
+    void AddFragmentShaderCode(const char* sourceCode) const;
     void SetUniformi(const std::string &name, const int &v1);
     void SetUniformf(const std::string &name, const float &v1);
     void SetUniform4f(const std::string &name, const float &v1, const float &v2, const float &v3, const float &v4);
@@ -25,6 +27,6 @@ public:
 private:
     const std::string GetTextFileContents(const std::string &filePath) const;
     const unsigned int CreateShader(unsigned int type, const char *source) const;
-    void LoadAndLinkShader(unsigned int type, const std::string &filePath) const;
+    void LoadAndLinkShader(unsigned int type, const char* shaderCode) const;
     int GetLocation(const std::string &name);
 };
