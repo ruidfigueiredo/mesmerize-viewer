@@ -56,7 +56,7 @@ MesmerizeOptions MesmerizeOptions::FromArgs(int argc, const char** argv) {
             }else if (!optionName.compare("window")){
                 options.IsFullScreen = false;
             }else if (!optionName.compare("resolution")) {
-                if (!optionValue.find("max")) {
+                if (optionValue.find("max") == 0) {
                     options.IsResolutionSetToMax = true;
                     options.ResolutionX = -1;
                     options.ResolutionY = -1;
@@ -66,6 +66,7 @@ MesmerizeOptions MesmerizeOptions::FromArgs(int argc, const char** argv) {
                                 "resolution option value is using an incorrect format, correct format is widthxheight");
                     std::string resXstr = optionValue.substr(0, optionValue.find("x"));
                     std::string resYstr = optionValue.substr(optionValue.find("x") + 1);
+                    options.IsResolutionSetToMax = false;
                     options.ResolutionX = std::stoi(resXstr);
                     options.ResolutionY = std::stoi(resYstr);
                 }
