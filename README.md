@@ -1,12 +1,8 @@
 # Mesmerize
 
 Mesmerize is a picture viewer that creates an animated slideshow. You just need to point it at a 
-directory with png and jpg files, and it will create this effect:
+directory with png and jpg files, and it will create [this effect](https://www.blinkingcaret.com/wp-content/uploads/2021/09/MesmerizeDemo.mp4).
 
-<video controls autoplay muted loop>
-    <source src="https://www.blinkingcaret.com/wp-content/uploads/2021/09/MesmerizeDemo.mp4" type="video/mp4">
-    Your browser does not support video
-</video>
 
     usage: [--window|--full-screen] [--resolution=widthxheight|--resolution=max] [--display-picture-duration=duration_in_seconds]
     [--opacity-animation-duration=duration_in_seconds] [--zoom-animation-duration=duration_in_seconds]
