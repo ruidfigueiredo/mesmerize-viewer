@@ -35,3 +35,6 @@ add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
     ${CMAKE_SOURCE_DIR}/src/shaders ${CMAKE_BINARY_DIR}/shaders)
 
 add_subdirectory(src/tests)
+
+install (TARGETS ${PROJECT_NAME}
+        DESTINATION ${CMAKE_INSTALL_BINDIR})
