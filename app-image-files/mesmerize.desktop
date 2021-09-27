@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Categories=Graphics
+Name=Mesmerize
+Comment=Image slideshow viewer with Ken Burns effect
+Exec=mesmerize
+Icon=mesmerize
